@@ -1,12 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-
+import { Image } from "expo-image";
 const CustomerProfileCard = ({ avatar, name, type, phone, email, address }) => {
   return (
     <View style={styles.card}>
       <View style={styles.avatarContainer}>
-        <View style={styles.avatar}></View>
+        <View style={styles.avatar}>
+          <Image
+            source="https://picsum.photos/seed/picsum/200/300"
+            contentFit="cover"
+          />
+        </View>
       </View>
       <View style={styles.row}>
         <Text style={styles.name}>{name}</Text>

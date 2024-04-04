@@ -50,17 +50,14 @@ const Profile = () => {
           <Text style={styles.pillText}>25</Text>
         </View>
       </View>
-      {/* Render HarvestDataCard for each set of data */}
       <ScrollView>
         {allHarvestData.map((data, index) => (
           <HarvestDataCard key={index} data={data} />
         ))}
       </ScrollView>
-      {/* Button to add a visit */}
       <TouchableOpacity style={styles.addButton} onPress={handleAddVisit}>
         <Text style={styles.addButtonText}>Add a visit</Text>
       </TouchableOpacity>
-      {/* Modal for adding new visit data */}
       <AddVisitModal
         isVisible={isModalVisible}
         onClose={closeModal}
