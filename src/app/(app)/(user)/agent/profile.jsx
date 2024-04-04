@@ -5,26 +5,14 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  Modal,
-  TextInput,
 } from "react-native";
 import CustomerProfileCard from "../../../../Component/CustomerProfileCard";
 import HarvestDataCard from "../../../../Component/HarvestDataCard";
+import AddVisitModal from "../../../../Component/visitModal";
 
 const Profile = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [pumpStatus, setPumpStatus] = useState("");
-  const [harvestData, setHarvestData] = useState("");
-
-  // Sample data for the harvestData
-  const initialHarvestData = [
-    { label: "Harvest Time", value: "8:00 AM" },
-    { label: "Harvest Data", value: "April 12, 2022" },
-    { label: "Pump Status", value: "Active" },
-    { label: "Location", value: "123 Street, City, Country" },
-  ];
-
-  const [allHarvestData, setAllHarvestData] = useState([initialHarvestData]);
+  const [allHarvestData, setAllHarvestData] = useState([]);
 
   const handleAddVisit = () => {
     setModalVisible(true);
@@ -34,7 +22,7 @@ const Profile = () => {
     setModalVisible(false);
   };
 
-  const handleAddVisitData = () => {
+  const handleAddVisitData = ({ pumpStatus, harvestData }) => {
     const newVisitData = [
       { label: "Harvest Time", value: harvestData },
       { label: "Harvest Data", value: pumpStatus },
@@ -42,7 +30,6 @@ const Profile = () => {
       { label: "Location", value: "123 Street, City, Country" },
     ];
     setAllHarvestData([...allHarvestData, newVisitData]);
-    setModalVisible(false);
   };
 
   return (
@@ -74,39 +61,11 @@ const Profile = () => {
         <Text style={styles.addButtonText}>Add a visit</Text>
       </TouchableOpacity>
       {/* Modal for adding new visit data */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Visit Details</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Pump Status"
-              value={pumpStatus}
-              onChangeText={setPumpStatus}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Harvest Data/Time"
-              value={harvestData}
-              onChangeText={setHarvestData}
-            />
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleAddVisitData}
-            >
-              <Text style={styles.addButtonText}>Add Visit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <AddVisitModal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+        onAddVisit={handleAddVisitData}
+      />
     </View>
   );
 };
@@ -148,44 +107,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   addButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-    width: "80%",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
-    width: "100%",
-  },
-  closeButton: {
-    backgroundColor: "#e74c3c",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  closeButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
