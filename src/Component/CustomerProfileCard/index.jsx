@@ -1,34 +1,34 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+s;
 import { Image } from "expo-image";
+import avatar2 from "../../../assets/svg/avatar_2.svg";
+import mailLogo from "../../../assets/svg/mail_logo.svg";
+import phoneLogo from "../../../assets/svg/call_logo.svg";
+import locationLogo from "../../../assets/svg/location_logo.svg";
 const CustomerProfileCard = ({ avatar, name, type, phone, email, address }) => {
   return (
     <View style={styles.card}>
       <View style={styles.avatarContainer}>
         <View style={styles.avatar}>
-          <Image
-            source="https://picsum.photos/seed/picsum/200/300"
-            contentFit="cover"
-          />
+          <Image source={avatar2} style={styles.avatar} />
         </View>
       </View>
       <View style={styles.row}>
         <Text style={styles.name}>{name}</Text>
-      </View>
-      <View style={styles.row}>
         <Text style={styles.type}>{type}</Text>
       </View>
+      <View style={styles.row}></View>
       <View style={styles.contactRow}>
-        <MaterialIcons name="phone" size={24} color="black" />
+        <Image source={phoneLogo} style={{ width: 20, height: 20 }} />
         <Text style={styles.contactInfo}>{phone}</Text>
       </View>
       <View style={styles.contactRow}>
-        <MaterialIcons name="email" size={24} color="black" />
+        <Image source={mailLogo} style={{ width: 20, height: 20 }} />
         <Text style={styles.contactInfo}>{email}</Text>
       </View>
       <View style={styles.contactRow}>
-        <MaterialIcons name="location-on" size={24} color="black" />
+        <Image source={locationLogo} style={{ width: 20, height: 20 }} />
         <Text style={styles.contactInfo}>{address}</Text>
       </View>
     </View>
@@ -37,18 +37,11 @@ const CustomerProfileCard = ({ avatar, name, type, phone, email, address }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0432FF0D",
     borderRadius: 10,
     padding: 20,
-    margin: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    marginHorizontal: 20,
+    marginVertical: 10,
   },
   avatarContainer: {
     paddingTop: 20,

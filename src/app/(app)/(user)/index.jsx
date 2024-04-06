@@ -58,7 +58,6 @@ export default function Index() {
       <View style={styles.appLayout}>
         <View style={styles.container}>
           <Text style={styles.title}>Overview</Text>
-          {/* <TimeLineFilter data={filterOptions} /> */}
         </View>
         {kpiData.map((item, index) => (
           <FilterKPI key={index} kpiData={item} />

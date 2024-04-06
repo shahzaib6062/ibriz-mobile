@@ -1,22 +1,31 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-
+import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
+import pumpLogo from "../../../assets/svg/pump_logo.svg";
+import clientLogo from "../../../assets/svg/client_logo.svg";
+import agentLogo from "../../../assets/svg/agent_logo.svg";
 const { width } = Dimensions.get("window");
-const logoSize = width * 0.15;
+const logoSize = width * 0.13;
 
 const FilterKPI = ({ kpiData }) => {
   const kpiLogo =
     kpiData.label === "Total Energy Generated"
-      ? require("../../../assets/svg/totalEnergyLogo.svg")
+      ? pumpLogo
       : kpiData.label === "Total Carbon Offset"
-      ? require("../../../assets/svg/carbonFootingLogo.svg")
-      : require("../../../assets/svg/runtimeLogo.svg");
+      ? clientLogo
+      : agentLogo;
 
   return (
     <View style={styles.container}>
       <View style={styles.itemContainer}>
         <View style={styles.imageContainer}>
-          <Image source={kpiLogo} style={styles.logo} />
+          <Image
+            source={pumpLogo}
+            style={{
+              width: logoSize,
+              height: logoSize,
+              backgroundColor: "#E0E0E0",
+            }}
+          />
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.row}>
@@ -37,6 +46,7 @@ const FilterKPI = ({ kpiData }) => {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 11,
+    marginVertical: 15,
     backgroundColor: "#FFF",
     shadowColor: "#DFE5FF",
     shadowOffset: {

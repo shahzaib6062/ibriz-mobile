@@ -1,27 +1,33 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
-
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 const CustomerCard = ({ avatar, name, designation, phoneNumber, address }) => {
+  const navigation = useNavigation();
+  const handleCardPress = () => {
+    navigation.navigate("agent/profile");
+  };
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <View style={styles.userInfoContainer}>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
-          <View style={styles.userInfo}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.designation}>{designation}</Text>
+    <TouchableOpacity onPress={handleCardPress}>
+      <View style={styles.container}>
+        <View style={styles.card}>
+          <View style={styles.userInfoContainer}>
+            <Image source={{ uri: avatar }} style={styles.avatar} />
+            <View style={styles.userInfo}>
+              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.designation}>{designation}</Text>
+            </View>
+          </View>
+          <View style={styles.contactInfo}>
+            <Text style={styles.icon}>icon</Text>
+            <Text>{phoneNumber}</Text>
+          </View>
+          <View style={styles.contactInfo}>
+            <Text style={styles.icon}>icon</Text>
+            <Text>{address}</Text>
           </View>
         </View>
-        <View style={styles.contactInfo}>
-          <Text style={styles.icon}>icon</Text>
-          <Text>{phoneNumber}</Text>
-        </View>
-        <View style={styles.contactInfo}>
-          <Text style={styles.icon}>icon</Text>
-          <Text>{address}</Text>
-        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

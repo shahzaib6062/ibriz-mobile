@@ -31,8 +31,8 @@ export default function Layout() {
         <Drawer.Screen
           name="profile"
           options={{
-            drawerLabel: "profile",
-            title: "profile",
+            drawerLabel: "Profile",
+            title: "Profile",
           }}
         />
       </Drawer>

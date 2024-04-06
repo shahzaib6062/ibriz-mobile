@@ -12,7 +12,7 @@ const AgentsCard = ({
   const navigation = useNavigation();
 
   const handleCardPress = () => {
-    navigation.navigate("agent");
+    navigation.navigate("agent/index");
   };
 
   return (
