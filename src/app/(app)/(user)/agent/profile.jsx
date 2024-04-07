@@ -9,10 +9,17 @@ import {
 import CustomerProfileCard from "../../../../Component/CustomerProfileCard";
 import HarvestDataCard from "../../../../Component/HarvestDataCard";
 import AddVisitModal from "../../../../Component/visitModal";
+import { useRoute } from "@react-navigation/native";
+import { useClient } from "../../../../Hooks/useQuery";
 
 const Profile = () => {
+  const route = useRoute();
+  const clientId = route.params?.clientId;
   const [isModalVisible, setModalVisible] = useState(false);
   const [allHarvestData, setAllHarvestData] = useState([]);
+
+  const { data: clientData, isLoading, error, refetch } = useClient(clientId);
+  console.log("🚀 ~ Profile ~ clientData:", clientData.data.data);
 
   const handleAddVisit = () => {
     setModalVisible(true);
@@ -36,11 +43,11 @@ const Profile = () => {
     <View style={styles.container}>
       <CustomerProfileCard
         avatar="avatar_url"
-        name="John Doe"
-        type="Regular Customer"
+        name={clientData?.data?.data?.name}
+        type="Customer"
         phone="+123 456 7890"
-        email="example@email.com"
-        address="123 Street, City, Country"
+        email={clientData?.data?.data?.email}
+        address={clientData?.data?.data?.clientLocation}
       />
       <View style={styles.header}>
         <View style={styles.headerTextContainer}>
@@ -70,6 +77,7 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#FFF",
   },
   header: {
     flexDirection: "row",
@@ -88,7 +96,6 @@ const styles = StyleSheet.create({
   pill: {
     backgroundColor: "#3498db",
     paddingHorizontal: 12,
-    paddingTop: 3,
     borderRadius: 15,
     marginLeft: 10,
   },

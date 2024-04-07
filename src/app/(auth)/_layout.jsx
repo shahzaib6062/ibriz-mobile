@@ -1,6 +1,7 @@
 import { Redirect, Stack } from "expo-router";
-import { useSession } from "../../contexts/sessionContext";
+
 import { View } from "react-native";
+import { useSession } from "../../contexts/sessionContext";
 
 export default function AuthLayout() {
   const { user, isLoading } = useSession();
@@ -19,8 +20,6 @@ export default function AuthLayout() {
   }
 
   if (user) {
-    if (user.isServiceAccount) return <Redirect href="/service" />;
-
     return <Redirect href="/" />;
   }
 

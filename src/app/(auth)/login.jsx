@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { Image } from "expo-image";
+import React from "react";
 import {
   View,
   Text,
@@ -6,64 +7,92 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { SvgUri } from "react-native-svg";
+import logo from "../../../assets/svg/login_logo.svg";
+import { useForm, Controller } from "react-hook-form";
+import { useLogin } from "../../Hooks/mutations";
+import axios from "axios";
 const LoginScreen = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
+  const { mutate: login, isLoading, error: loginError } = useLogin();
 
-  const handleLogin = () => {
-    // Add your login logic here
-    console.log("Logging in with:", username, password);
-  };
-
-  const toggleRememberMe = () => {
-    setRememberMe(!rememberMe);
+  const onSubmit = async (data) => {
+    try {
+      await login({
+        email: data.email,
+        password: data.password,
+      });
+    } catch (error) {
+      setError("login", {
+        type: "manual",
+        message: "Login failed. Please try again.",
+      });
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        {/* <SvgUri
-          width="200px"
-          height="100px"
-          uri={require("../../../assets/svg/IBRIZ_logo.svg")}
-        /> */}
-        <Text style={styles.loginText}>Log in to your account</Text>
+        <Image source={logo} style={styles.logo} />
       </View>
       <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Username/Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your username or email"
-            onChangeText={(text) => setUsername(text)}
-            value={username}
+          <Text style={styles.label}>Email</Text>
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                onChangeText={field.onChange}
+                value={field.value}
+              />
+            )}
+            name="email"
+            rules={{ required: "Email is required" }}
+            defaultValue=""
           />
+          {errors?.email && (
+            <Text style={styles.error}>{errors.email.message}</Text>
+          )}
         </View>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Password</Text>
-          <TouchableOpacity style={styles.forgotContainer}>
-            <Text style={styles.forgotText}>Reset Password</Text>
-          </TouchableOpacity>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
-            secureTextEntry
-            onChangeText={(text) => setPassword(text)}
-            value={password}
+          <Controller
+            control={control}
+            render={({ field }) => (
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your password"
+                onChangeText={field.onChange}
+                value={field.value}
+                secureTextEntry
+              />
+            )}
+            name="password"
+            rules={{ required: "Password is required" }}
+            defaultValue=""
           />
+          {errors?.password && (
+            <Text style={styles.error}>{errors.password.message}</Text>
+          )}
         </View>
         <TouchableOpacity
-          style={styles.checkboxContainer}
-          onPress={toggleRememberMe}
+          style={styles.loginButton}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isLoading}
         >
-          <View style={[styles.checkbox, rememberMe && styles.checkedBox]} />
-          <Text style={styles.checkboxText}>Remember Me</Text>
+          <Text style={styles.loginButtonText}>
+            {isLoading ? "Logging in..." : "Login"}
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Login</Text>
-        </TouchableOpacity>
+        {errors.login && (
+          <Text style={styles.error}>{errors.login.message}</Text>
+        )}
       </View>
     </View>
   );
@@ -78,17 +107,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    paddingHorizontal: 50,
-    paddingVertical: "35%",
+    paddingVertical: "30%",
     backgroundColor: "#007bff",
   },
-  logoText: {
-    fontSize: 36,
-    fontWeight: "bold",
-  },
-  loginText: {
-    fontSize: 24,
-    color: "#FFF",
+  logo: {
+    width: 200,
+    height: 150,
+    objectFit: "contain",
   },
   formContainer: {
     width: "80%",
@@ -110,33 +135,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
   },
-  forgotContainer: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-    justifyContent: "center",
-  },
-  forgotText: {
-    color: "#007bff",
-  },
-  checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderWidth: 1,
-    borderColor: "#333333",
-    marginRight: 10,
-  },
-  checkedBox: {
-    backgroundColor: "#007bff",
-  },
-  checkboxText: {
-    color: "#333333",
-  },
   loginButton: {
     backgroundColor: "#007bff",
     padding: 12,
@@ -147,6 +145,9 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  error: {
+    color: "red",
   },
 });
 

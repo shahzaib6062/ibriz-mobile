@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-s;
 import { Image } from "expo-image";
 import avatar2 from "../../../assets/svg/avatar_2.svg";
 import mailLogo from "../../../assets/svg/mail_logo.svg";

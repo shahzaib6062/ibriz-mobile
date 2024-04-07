@@ -1,25 +1,21 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
-
-const AgentsCard = ({
-  avatar,
-  name,
-  designation,
-  totalCustomers,
-  groupAvatars,
-}) => {
+import avatar1 from "../../../assets/svg/avatar_1.svg";
+import groupAvatar from "../../../assets/svg/group_avatar.svg";
+const AgentsCard = ({ name, designation, totalCustomers, id }) => {
   const navigation = useNavigation();
 
   const handleCardPress = () => {
-    navigation.navigate("agent/index");
+    navigation.navigate("agent/index", { agentId: id });
   };
 
   return (
     <TouchableOpacity onPress={handleCardPress} style={styles.container}>
       <View style={styles.row}>
         <View style={styles.userInfoContainer}>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+          <Image source={avatar1} style={styles.avatar} />
           <View>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.designation}>{designation}</Text>
@@ -28,16 +24,12 @@ const AgentsCard = ({
       </View>
       <View style={styles.row}>
         <View style={styles.customerCountContainer}>
-          <Text style={styles.customerCount}>{totalCustomers} customers</Text>
+          <Text style={{ ...styles.customerCount, color: "#0432FF" }}>
+            {totalCustomers} customers
+          </Text>
         </View>
         <View style={styles.groupAvatarContainer}>
-          {groupAvatars.map((avatar, index) => (
-            <Image
-              key={index}
-              source={{ uri: avatar }}
-              style={styles.groupAvatar}
-            />
-          ))}
+          <Image source={groupAvatar} style={styles.groupAvatar} />
         </View>
       </View>
     </TouchableOpacity>
@@ -46,26 +38,18 @@ const AgentsCard = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    margin: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    width: "450px",
-    height: "100px",
+    borderRadius: 11,
+    backgroundColor: "#0432FF0D",
+    paddingHorizontal: 10,
+    paddingVertical: 16,
+    marginVertical: 10,
+    marginHorizontal: 15,
+    width: 280,
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
   },
   userInfoContainer: {
     flexDirection: "row",
@@ -76,6 +60,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 10,
+    backgroundColor: "rgba(13, 62, 255, 0.12)",
   },
   name: {
     fontSize: 16,
@@ -89,24 +74,20 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   customerCountContainer: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#D7DCF0",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 15,
-    marginRight: 10,
+    marginTop: 10,
+    marginLeft: 5,
   },
   customerCount: {
-    color: "#fff",
     fontSize: 12,
+    fontWeight: "bold",
   },
-  groupAvatarContainer: {
-    flexDirection: "row",
-  },
+  groupAvatarContainer: {},
   groupAvatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginLeft: 5,
+    marginLeft: 15,
   },
 });
 

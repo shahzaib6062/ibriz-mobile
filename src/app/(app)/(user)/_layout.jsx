@@ -5,7 +5,7 @@ import { useSession } from "../../../contexts/sessionContext";
 
 export default function Layout() {
   const { user, isLoading } = useSession();
-  if (user) {
+  if (!user) {
     return <Redirect href="/login" />;
   }
 

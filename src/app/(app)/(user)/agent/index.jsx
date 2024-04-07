@@ -1,12 +1,17 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import CustomerCard from "../../../../Component/CustomerCard";
 import avatar2 from "../../../../../assets/svg/avatar_2.svg";
+import { useRoute } from "@react-navigation/native";
+import { useClientsOfAgent } from "../../../../Hooks/useQuery";
+import { Image } from "expo-image";
+import { ScrollView } from "react-native-gesture-handler";
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#FFF",
     flex: 1,
   },
   titleRow: {
@@ -57,24 +62,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const customersData = [
-  {
-    avatar: "avatar_url_1",
-    name: "Fermi Borgani",
-    designation: "Customer",
-    phoneNumber: "+92-346-2567607",
-    address: "RN2, Nayamugari, Street 29, Burundi",
-  },
-  {
-    avatar: "avatar_url_2",
-    name: "John Doe",
-    designation: "Customer",
-    phoneNumber: "+91-9876543210",
-    address: "123 Main Street, City, Country",
-  },
-];
-
 const Index = () => {
+  const route = useRoute();
+  const agentId = route.params?.agentId;
+
+  const {
+    data: customersData,
+    isLoading,
+    error,
+    refetch,
+  } = useClientsOfAgent(agentId);
+  // console.log("🚀 ~ Index ~ customersData:", customersData?.data);
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
@@ -88,12 +86,29 @@ const Index = () => {
           <Text style={styles.headerText}>Assigned Customer</Text>
         </View>
         <View style={styles.pill}>
-          <Text style={styles.pillText}>25</Text>
+          <Text style={styles.pillText}>{customersData?.data?.count}</Text>
         </View>
       </View>
-      {customersData.map((customer, index) => (
-        <CustomerCard key={index} {...customer} />
-      ))}
+      {customersData &&
+        customersData.data &&
+        Array.isArray(customersData?.data?.data) && (
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.CustomerCard}
+            showsHorizontalScrollIndicator={false}
+          >
+            {customersData?.data?.data.map((customer, index) => (
+              <CustomerCard
+                key={index}
+                name="sd"
+                designation="dcsndk"
+                phoneNumber="1234567890"
+                address="address"
+                id={customer._id}
+              />
+            ))}
+          </ScrollView>
+        )}
     </View>
   );
 };
