@@ -43,3 +43,12 @@ export const useClient = (clientId) => {
     },
   });
 };
+
+export const useClientsVisits = (clientId) => {
+  return useQuery({
+    queryKey: ["clientsVisits", clientId],
+    queryFn: () => {
+      return axios.get(`${api_url}/clients/${clientId}/visits?pageSize=20`);
+    },
+  });
+};

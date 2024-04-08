@@ -8,7 +8,11 @@ const AgentsCard = ({ name, designation, totalCustomers, id }) => {
   const navigation = useNavigation();
 
   const handleCardPress = () => {
-    navigation.navigate("agent/index", { agentId: id });
+    if (designation === "Field Agent") {
+      navigation.navigate("agent/index", { agentId: id });
+    } else if (designation === "Customer") {
+      navigation.navigate("agent/profile", { clientId: id });
+    }
   };
 
   return (

@@ -4,11 +4,13 @@ import FilterKPI from "../../../Component/FilterKpi";
 import TimeLineFilter from "../../../Component/TimeLineFilter";
 import { AntDesign } from "@expo/vector-icons";
 import AgentsCard from "../../../Component/AgentsCard";
+import loadingLogo from "../../../../assets/IBRIZ _logo.png";
 import {
   useClientsByAgent,
   useFieldAgentsBySalesAgent,
 } from "../../../Hooks/useQuery";
 import { useSession } from "../../../contexts/sessionContext";
+import { Image } from "expo-image";
 
 const styles = StyleSheet.create({
   title: {
@@ -30,22 +32,29 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 40,
   },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: "#3498db",
+    justifyContent: "center",
+    alignItems: "center",
+    objectFit: "contain",
+  },
 });
 
 export default function Index() {
   const { user, removeUser } = useSession();
   const {
     data: clientsByAgent,
-    isLoading,
-    error,
-    refetch,
+    isLoading: isLoadingClients,
+    error: errorClients,
+    refetch: refetchClients,
   } = useClientsByAgent();
 
   const {
     data: fieldAgentsBySalesAgent,
-    isLoading: isLoadingFieldAgentsBySalesAgent,
-    error: errorFieldAgentsBySalesAgent,
-    refetch: refetchFieldAgentsBySalesAgent,
+    isLoading: isLoadingFieldAgents,
+    error: errorFieldAgents,
+    refetch: refetchFieldAgents,
   } = useFieldAgentsBySalesAgent();
 
   const filterOptions = [
@@ -75,6 +84,17 @@ export default function Index() {
   const logout = () => {
     removeUser();
   };
+
+  if (isLoadingClients || isLoadingFieldAgents) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Image source={loadingLogo} width={60} height={60} />
+        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView>
@@ -139,7 +159,8 @@ export default function Index() {
                       key={index}
                       name={client?.name}
                       designation="Customer"
-                      totalCustomers={100} // You can modify this according to your data
+                      totalCustomers={100}
+                      id={client?._id}
                     />
                   ))}
                 </ScrollView>

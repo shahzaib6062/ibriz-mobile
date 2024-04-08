@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,16 +10,35 @@ import CustomerProfileCard from "../../../../Component/CustomerProfileCard";
 import HarvestDataCard from "../../../../Component/HarvestDataCard";
 import AddVisitModal from "../../../../Component/visitModal";
 import { useRoute } from "@react-navigation/native";
-import { useClient } from "../../../../Hooks/useQuery";
-
+import { useClient, useClientsVisits } from "../../../../Hooks/useQuery";
+import moment from "moment";
+import "moment-timezone";
 const Profile = () => {
   const route = useRoute();
   const clientId = route.params?.clientId;
   const [isModalVisible, setModalVisible] = useState(false);
-  const [allHarvestData, setAllHarvestData] = useState([]);
-
   const { data: clientData, isLoading, error, refetch } = useClient(clientId);
-  console.log("🚀 ~ Profile ~ clientData:", clientData.data.data);
+  const {
+    data: visitData,
+    isLoading: visitLoading,
+    error: visitError,
+    refetch: visitRefetch,
+  } = useClientsVisits(clientId);
+
+  useEffect(() => {
+    if (visitData && visitData.data && Array.isArray(visitData.data)) {
+      const harvestData = visitData.data.map(
+        (visit) => (
+          {
+            label: "Visit ID",
+            value: visit._id,
+          },
+          console.log("visit", visit)
+        )
+      );
+      setAllHarvestData(harvestData);
+    }
+  }, [visitData]);
 
   const handleAddVisit = () => {
     setModalVisible(true);
@@ -27,16 +46,6 @@ const Profile = () => {
 
   const closeModal = () => {
     setModalVisible(false);
-  };
-
-  const handleAddVisitData = ({ pumpStatus, harvestData }) => {
-    const newVisitData = [
-      { label: "Harvest Time", value: harvestData },
-      { label: "Harvest Data", value: pumpStatus },
-      { label: "Pump Status", value: pumpStatus },
-      { label: "Location", value: "123 Street, City, Country" },
-    ];
-    setAllHarvestData([...allHarvestData, newVisitData]);
   };
 
   return (
@@ -54,13 +63,35 @@ const Profile = () => {
           <Text style={styles.headerText}>Visits</Text>
         </View>
         <View style={styles.pill}>
-          <Text style={styles.pillText}>25</Text>
+          <Text style={styles.pillText}>{visitData?.data?.count}</Text>
         </View>
       </View>
       <ScrollView>
-        {allHarvestData.map((data, index) => (
-          <HarvestDataCard key={index} data={data} />
-        ))}
+        {visitData &&
+          visitData.data &&
+          Array.isArray(visitData.data.data) &&
+          visitData.data.data.map((visit, index) => (
+            <HarvestDataCard
+              key={index}
+              data={[
+                {
+                  label: "Harvest Time",
+                  value: moment(visit?.harvestDateTime)
+                    .tz(moment.tz.guess())
+                    .format("HH:mm A"),
+                },
+                {
+                  label: "Harvest Date",
+                  value: moment(visit?.harvestDateTime).format("YYYY-MM-DD"),
+                },
+                { label: "Location", value: visit?.visitLocation },
+                {
+                  label: "Pump Status",
+                  value: visit.pumpStatus === 1 ? "ON" : "OFF",
+                },
+              ]}
+            />
+          ))}
       </ScrollView>
       <TouchableOpacity style={styles.addButton} onPress={handleAddVisit}>
         <Text style={styles.addButtonText}>Add a visit</Text>
@@ -68,7 +99,7 @@ const Profile = () => {
       <AddVisitModal
         isVisible={isModalVisible}
         onClose={closeModal}
-        onAddVisit={handleAddVisitData}
+        clientId={clientId}
       />
     </View>
   );

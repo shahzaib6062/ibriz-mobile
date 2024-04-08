@@ -72,7 +72,6 @@ const Index = () => {
     error,
     refetch,
   } = useClientsOfAgent(agentId);
-  // console.log("🚀 ~ Index ~ customersData:", customersData?.data);
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
