@@ -4,7 +4,7 @@ import FilterKPI from "../../../Component/FilterKpi";
 import TimeLineFilter from "../../../Component/TimeLineFilter";
 import { AntDesign } from "@expo/vector-icons";
 import AgentsCard from "../../../Component/AgentsCard";
-import loadingLogo from "../../../../assets/IBRIZ _logo.png";
+import loadingLogo from "../../../../assets/IBRIZ_logo.png";
 import {
   useClientsByAgent,
   useFieldAgentsBySalesAgent,

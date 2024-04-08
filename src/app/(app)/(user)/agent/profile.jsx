@@ -13,7 +13,9 @@ import { useRoute } from "@react-navigation/native";
 import { useClient, useClientsVisits } from "../../../../Hooks/useQuery";
 import moment from "moment";
 import "moment-timezone";
+import { useNavigation } from "expo-router";
 const Profile = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const clientId = route.params?.clientId;
   const [isModalVisible, setModalVisible] = useState(false);
@@ -25,21 +27,6 @@ const Profile = () => {
     refetch: visitRefetch,
   } = useClientsVisits(clientId);
 
-  useEffect(() => {
-    if (visitData && visitData.data && Array.isArray(visitData.data)) {
-      const harvestData = visitData.data.map(
-        (visit) => (
-          {
-            label: "Visit ID",
-            value: visit._id,
-          },
-          console.log("visit", visit)
-        )
-      );
-      setAllHarvestData(harvestData);
-    }
-  }, [visitData]);
-
   const handleAddVisit = () => {
     setModalVisible(true);
   };
@@ -50,6 +37,9 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.navigate("/index")}>
+        <Text style={styles.backButton}>Back</Text>
+      </TouchableOpacity>
       <CustomerProfileCard
         avatar="avatar_url"
         name={clientData?.data?.data?.name}

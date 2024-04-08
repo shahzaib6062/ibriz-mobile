@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const HarvestDataCard = ({ data }) => {
-  console.log("🚀 ~ HarvestDataCard ~ data:", data);
   return (
     <View style={styles.container}>
       {data.map((item, index) => (

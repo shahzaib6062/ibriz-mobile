@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,9 @@ import {
 import logo from "../../../assets/svg/login_logo.svg";
 import { useForm, Controller } from "react-hook-form";
 import { useLogin } from "../../Hooks/mutations";
+import loadingLogo from "../../../assets/IBRIZ_logo.png";
 import axios from "axios";
+
 const LoginScreen = () => {
   const {
     control,
@@ -19,18 +21,24 @@ const LoginScreen = () => {
     setError,
   } = useForm();
   const { mutate: login, isLoading, error: loginError } = useLogin();
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onSubmit = async (data) => {
+    setLoginLoading(true);
     try {
       await login({
         email: data.email,
         password: data.password,
       });
     } catch (error) {
+      setErrorMessage("Login failed. Please try again.");
       setError("login", {
         type: "manual",
         message: "Login failed. Please try again.",
       });
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -84,14 +92,15 @@ const LoginScreen = () => {
         <TouchableOpacity
           style={styles.loginButton}
           onPress={handleSubmit(onSubmit)}
-          disabled={isLoading}
+          disabled={isLoading || loginLoading}
         >
           <Text style={styles.loginButtonText}>
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading || loginLoading ? "Logging in..." : "Login"}
           </Text>
         </TouchableOpacity>
-        {errors.login && (
-          <Text style={styles.error}>{errors.login.message}</Text>
+        {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+        {loginError && (
+          <Text style={styles.error}>Login failed. Please try again.</Text>
         )}
       </View>
     </View>
