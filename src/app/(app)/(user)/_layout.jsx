@@ -1,9 +1,70 @@
 import React from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  GestureHandlerRootView,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 import { Drawer } from "expo-router/drawer";
 import { Redirect } from "expo-router";
 import { useSession } from "../../../contexts/sessionContext";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Touchable } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import CustomDrawer from "../../../Component/customDrawer";
+import { getHeaderTitle } from "@react-navigation/elements";
+import avatar from "../../../../assets/svg/avatar_2.svg";
+import drawerIcon from "../../../../assets/svg/drawerIcon.svg";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+const MyHeader = () => {
+  const { user } = useSession();
+  const navigation = useNavigation();
+  return (
+    <>
+      <View
+        style={{
+          backgroundColor: "#0432FF",
+          paddingTop: StatusBar.currentHeight,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#0432FF",
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            height: 40,
+            paddingHorizontal: 15,
+            paddingVertical: 5,
+          }}
+        >
+          <View>
+            <TouchableOpacity onPress={() => navigation.openDrawer()}>
+              <Image source={drawerIcon} width={20} height={30} />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <Image source={avatar} width={30} height={30} />
+            <Text
+              style={{
+                color: "#FFF",
+                marginTop: 5,
+                marginLeft: 5,
+              }}
+            >
+              {user?.data?.name}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </>
+  );
+};
 
 export default function Layout() {
   const { user, isLoading } = useSession();
@@ -16,33 +77,31 @@ export default function Layout() {
     <GestureHandlerRootView
       style={{ flex: 1, paddingTop: 40, backgroundColor: "#fff" }}
     >
-      <Drawer>
+      <Drawer
+        screenOptions={{
+          drawerLabelStyle: { marginLeft: -20 },
+          drawerActiveBackgroundColor: "#FFF",
+          drawerActiveTintColor: "black",
+          drawerInactiveTintColor: "#FFF",
+          header: ({ navigation, route, options }) => {
+            const title = getHeaderTitle(options, route.name);
+
+            return <MyHeader title={title} style={options.headerStyle} />;
+          },
+        }}
+        drawerContent={CustomDrawer}
+      >
         <Drawer.Screen
           name="index"
           options={{
             drawerLabel: "Home",
-            title: "overview",
-          }}
-        />
-        <Drawer.Screen
-          name="agent"
-          options={{
-            drawerLabel: "Agent",
-            title: "Agent",
-          }}
-        />
-        <Drawer.Screen
-          name="profile"
-          options={{
-            drawerLabel: "Profile",
-            title: "Profile",
+            title: "Home",
+            drawerIcon: ({ size, color }) => (
+              <AntDesign name="home" size={size} color={color} />
+            ),
           }}
         />
       </Drawer>
-      <View style={styles.header}>
-        <Image source={{ uri: user.avatar }} style={styles.avatar} />
-        <Text style={styles.username}>vji</Text>
-      </View>
     </GestureHandlerRootView>
   );
 }

@@ -1,16 +1,18 @@
 import React from "react";
 import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
 import FilterKPI from "../../../Component/FilterKpi";
-import TimeLineFilter from "../../../Component/TimeLineFilter";
 import { AntDesign } from "@expo/vector-icons";
 import AgentsCard from "../../../Component/AgentsCard";
 import loadingLogo from "../../../../assets/IBRIZ_logo.png";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import arrowHead from "../../../../assets/svg/arrowHead.svg";
+
 import {
   useClientsByAgent,
   useFieldAgentsBySalesAgent,
 } from "../../../Hooks/useQuery";
-import { useSession } from "../../../contexts/sessionContext";
 import { Image } from "expo-image";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   title: {
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: "#3498db",
+    backgroundColor: "#0432FF",
     justifyContent: "center",
     alignItems: "center",
     objectFit: "contain",
@@ -42,10 +44,10 @@ const styles = StyleSheet.create({
 });
 
 export default function Index() {
-  const { user, removeUser } = useSession();
   const {
     data: clientsByAgent,
     isLoading: isLoadingClients,
+    isError: isErrorClients,
     error: errorClients,
     refetch: refetchClients,
   } = useClientsByAgent();
@@ -53,42 +55,46 @@ export default function Index() {
   const {
     data: fieldAgentsBySalesAgent,
     isLoading: isLoadingFieldAgents,
+    isError: isErrorFieldAgents,
     error: errorFieldAgents,
     refetch: refetchFieldAgents,
   } = useFieldAgentsBySalesAgent();
 
-  const filterOptions = [
-    { value: "Last Hour", label: "Last Hour" },
-    { value: "Last Day", label: "Last Day" },
-    { value: "This Week", label: "This Week" },
-    { value: "This Month", label: "This Month" },
-    { value: "This Year", label: "This Year" },
-  ];
   const kpiData = [
     {
-      value: 1000,
-      unit: "kWh",
-      label: "Total Energy Generated",
+      value:
+        fieldAgentsBySalesAgent?.data && fieldAgentsBySalesAgent?.data?.count,
+      unit: "",
+      label: "Total Field Agents",
     },
     {
-      value: 500,
-      unit: "tons",
-      label: "Total Carbon Offset",
-    },
-    {
-      value: 200,
-      unit: "hours",
-      label: "Total Working Time",
+      value: clientsByAgent?.data && clientsByAgent?.data?.count,
+      unit: "",
+      label: "Total Customers",
     },
   ];
-  const logout = () => {
-    removeUser();
-  };
 
   if (isLoadingClients || isLoadingFieldAgents) {
     return (
       <View style={styles.loadingContainer}>
-        <Image source={loadingLogo} width={60} height={60} />
+        <Image source={loadingLogo} width={"50%"} height={100} />
+        <TouchableOpacity
+          onPress={() => {
+            refetchFieldAgents, refetchClients;
+          }}
+        >
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Error fetch again
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (isErrorFieldAgents || isErrorClients) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Image source={loadingLogo} width={"50%"} height={100} />
         <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
           Loading...
         </Text>
@@ -98,7 +104,6 @@ export default function Index() {
 
   return (
     <ScrollView>
-      <Button onPress={logout} title="Logout" />
       <View style={styles.appLayout}>
         <View style={styles.container}>
           <Text style={styles.title}>Overview</Text>
@@ -106,7 +111,28 @@ export default function Index() {
         {kpiData.map((item, index) => (
           <FilterKPI key={index} kpiData={item} />
         ))}
-        {fieldAgentsBySalesAgent && fieldAgentsBySalesAgent.data && (
+
+        {fieldAgentsBySalesAgent &&
+          fieldAgentsBySalesAgent.data?.count === 0 &&
+          clientsByAgent &&
+          clientsByAgent.data?.count === 0 && (
+            <View
+              style={{
+                backgroundColor: "#FFF",
+                alignSelf: "center",
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "row",
+                alignContent: "center",
+                paddingVertical: 200,
+              }}
+            >
+              <MaterialCommunityIcons name="set-none" size={24} color="black" />
+              <Text style={{ fontSize: 20 }}>No data</Text>
+            </View>
+          )}
+
+        {fieldAgentsBySalesAgent && fieldAgentsBySalesAgent.data?.count > 0 && (
           <View style={styles.container}>
             <Text style={styles.title}>Field Agents</Text>
             <AntDesign
@@ -135,7 +161,7 @@ export default function Index() {
               />
             ))}
         </ScrollView>
-        {clientsByAgent && clientsByAgent.data && (
+        {clientsByAgent && clientsByAgent.data?.count > 0 && (
           <View>
             <View style={styles.container}>
               <Text style={styles.title}>Customers</Text>

@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#007bff",
   },
   logo: {
-    width: 200,
+    width: 300,
     height: 150,
     objectFit: "contain",
   },

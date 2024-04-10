@@ -6,8 +6,11 @@ import avatar2 from "../../../../../assets/svg/avatar_2.svg";
 import { useRoute } from "@react-navigation/native";
 import { useClientsOfAgent } from "../../../../Hooks/useQuery";
 import { Image } from "expo-image";
-import { ScrollView } from "react-native-gesture-handler";
-
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { useSession } from "../../../../contexts/sessionContext";
+import loadingLogo from "..././../../../assets/IBRIZ_logo.png";
+import { useNavigation } from "expo-router";
+import backIcon from "../../../../../assets/svg/backArrow.svg";
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -63,21 +66,70 @@ const styles = StyleSheet.create({
 });
 
 const Index = () => {
+  const navigation = useNavigation();
+  const { user } = useSession();
   const route = useRoute();
   const agentId = route.params?.agentId;
 
   const {
     data: customersData,
-    isLoading,
-    error,
+    isLoading: isLoadingCustomers,
+    isError: isErrorCustomers,
     refetch,
   } = useClientsOfAgent(agentId);
+
+  if (isLoadingCustomers) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#0432FF",
+          justifyContent: "center",
+          alignItems: "center",
+          objectFit: "contain",
+        }}
+      >
+        <Image source={loadingLogo} width={"50%"} height={100} />
+        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
+  if (isErrorCustomers) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#0432FF",
+          justifyContent: "center",
+          alignItems: "center",
+          objectFit: "contain",
+        }}
+      >
+        <Image source={loadingLogo} width={"50%"} height={100} />
+        <TouchableOpacity onPress={refetch}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Error fetch again
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
-        <AntDesign name="left" size={24} color="black" />
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            source={backIcon}
+            width={20}
+            height={20}
+            style={{ marginTop: 5 }}
+          />
+        </TouchableOpacity>
         <Image source={avatar2} style={styles.avatar} />
-        <Text style={styles.titleText}>Sales Agent</Text>
+        <Text style={styles.titleText}>{user?.data?.name}</Text>
         <Text style={styles.titleDesignationText}>Sales Agent</Text>
       </View>
       <View style={styles.header}>
@@ -85,7 +137,9 @@ const Index = () => {
           <Text style={styles.headerText}>Assigned Customer</Text>
         </View>
         <View style={styles.pill}>
-          <Text style={styles.pillText}>{customersData?.data?.count}</Text>
+          <Text style={styles.pillText}>
+            {customersData?.data?.count || "0"}
+          </Text>
         </View>
       </View>
       {customersData &&
@@ -99,10 +153,10 @@ const Index = () => {
             {customersData?.data?.data.map((customer, index) => (
               <CustomerCard
                 key={index}
-                name="sd"
-                designation="dcsndk"
+                name={customer?.name}
+                designation="Field Agent"
                 phoneNumber="1234567890"
-                address="address"
+                address={customer?.clientLocation}
                 id={customer._id}
               />
             ))}

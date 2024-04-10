@@ -1,17 +1,18 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import pumpLogo from "../../../assets/svg/pump_logo.svg";
 import clientLogo from "../../../assets/svg/client_logo.svg";
 import agentLogo from "../../../assets/svg/agent_logo.svg";
 import logo from "../../../assets/svg/avatar_1.svg";
+import { Image } from "expo-image";
 const { width } = Dimensions.get("window");
 const logoSize = width * 0.11;
 
 const FilterKPI = ({ kpiData }) => {
   const kpiLogo =
-    kpiData.label === "Total Energy Generated"
+    kpiData.label === "Total Field Agents"
       ? pumpLogo
-      : kpiData.label === "Total Carbon Offset"
+      : kpiData.label === "Total Customers"
       ? clientLogo
       : agentLogo;
 
@@ -20,11 +21,12 @@ const FilterKPI = ({ kpiData }) => {
       <View style={styles.itemContainer}>
         <View style={styles.imageContainer}>
           <Image
-            source={logo}
+            source={kpiLogo}
             style={{
               width: logoSize,
               height: logoSize,
-              backgroundColor: "#E0E0E0",
+              objectFit: "contain",
+              padding: 10,
             }}
           />
         </View>
@@ -67,16 +69,11 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     marginRight: 10,
+    padding: 5,
+    backgroundColor: "#D7DCF0",
+    borderRadius: 5,
   },
-  logo: {
-    width: logoSize,
-    height: logoSize,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: "#D7DCF0",
-    backgroundColor: "rgba(13, 62, 255, 0.12)",
-    padding: 7,
-  },
+
   infoContainer: {
     flex: 2,
   },

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import CustomerProfileCard from "../../../../Component/CustomerProfileCard";
 import HarvestDataCard from "../../../../Component/HarvestDataCard";
 import AddVisitModal from "../../../../Component/visitModal";
@@ -14,6 +8,10 @@ import { useClient, useClientsVisits } from "../../../../Hooks/useQuery";
 import moment from "moment";
 import "moment-timezone";
 import { useNavigation } from "expo-router";
+import loadingLogo from "..././../../../assets/IBRIZ_logo.png";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Image } from "expo-image";
+import backIcon from "../../../../../assets/svg/backArrow.svg";
 const Profile = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -22,7 +20,8 @@ const Profile = () => {
   const { data: clientData, isLoading, error, refetch } = useClient(clientId);
   const {
     data: visitData,
-    isLoading: visitLoading,
+    isLoading: isLoadingVisits,
+    isError: isErrorVisits,
     error: visitError,
     refetch: visitRefetch,
   } = useClientsVisits(clientId);
@@ -35,13 +34,61 @@ const Profile = () => {
     setModalVisible(false);
   };
 
+  if (isErrorVisits) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#0432FF",
+          justifyContent: "center",
+          alignItems: "center",
+          objectFit: "contain",
+        }}
+      >
+        <Image source={loadingLogo} width={"50%"} height={100} />
+        <TouchableOpacity onPress={visitRefetch}>
+          <Text style={{ marginTop: 15, fontWeight: "bold", color: "#FFF" }}>
+            Error fetch again
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (isLoadingVisits) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#0432FF",
+          justifyContent: "center",
+          alignItems: "center",
+          objectFit: "contain",
+        }}
+      >
+        <Image source={loadingLogo} width={"50%"} height={100} />
+        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("/index")}>
-        <Text style={styles.backButton}>Back</Text>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <View style={{ display: "flex", flexDirection: "row", padding: 10 }}>
+          <Image
+            source={backIcon}
+            width={10}
+            height={10}
+            style={{ marginTop: 5 }}
+          />
+          <Text style={{}}>Back</Text>
+        </View>
       </TouchableOpacity>
+
       <CustomerProfileCard
-        avatar="avatar_url"
         name={clientData?.data?.data?.name}
         type="Customer"
         phone="+123 456 7890"

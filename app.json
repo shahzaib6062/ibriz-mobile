@@ -7,9 +7,11 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "height": "100px",
+      "width": "100px",
+      "image": "./assets/Splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0432FF"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -17,12 +19,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/Splash.png",
+        "backgroundColor": "#0432FF",
+        "height": "100px",
+        "width": "100px"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/IBRIZ_logo.png"
     },
     "plugins": ["expo-router"]
   }

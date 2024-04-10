@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Location from "expo-location";
 import { useSession } from "../../contexts/sessionContext";
 import { useAddVisit } from "../../Hooks/mutations";
+import MapView, { Marker } from "react-native-maps";
 
 const AddVisitModal = ({ isVisible, onClose, clientId }) => {
   const { user } = useSession();
@@ -11,6 +12,15 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [location, setLocation] = useState(null);
   const [isLocationSuccess, setLocationSuccess] = useState(false);
+  const [isMapVisible, setMapVisible] = useState(false);
+  const [mapRegion, setMapRegion] = useState({});
+
+  useEffect(() => {
+    setMapVisible(false);
+    setLocation(false);
+    setSelectedDate(null);
+    setSelectedDate(false);
+  }, []);
   const {
     mutate: addVisit,
     isLoading: addVisitLoading,
@@ -29,6 +39,16 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setSelectedDate(date);
     hideDatePicker();
   };
+  useEffect(() => {
+    if (location) {
+      setMapRegion({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
+      });
+    }
+  }, [location]);
 
   const getLocationAsync = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -40,6 +60,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location.coords);
     setLocationSuccess(true);
+    setMapVisible(true);
   };
 
   const handleAddVisitData = () => {
@@ -47,13 +68,23 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
       harvestDateTime: selectedDate.toISOString(),
       client: clientId,
       recordedBy: user?.data?._id,
-      visitLocation: [location.longitude, location.latitude], // Extracting latitude and longitude
+      visitLocation: [location.longitude, location.latitude],
     };
-    onClose();
+    setMapVisible(false);
     addVisit(visitData);
     setSelectedDate(null);
     setLocation(null);
     setLocationSuccess(false);
+    onClose();
+  };
+
+  const closeLocation = () => {
+    setSelectedDate(null);
+    setLocation(null);
+    setLocationSuccess(false);
+    setMapVisible(false);
+    setMapRegion({});
+    onClose();
   };
 
   return (
@@ -61,7 +92,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
       animationType="slide"
       transparent={true}
       visible={isVisible}
-      onRequestClose={onClose}
+      onRequestClose={closeLocation}
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
@@ -73,6 +104,22 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
                 : "Select Date & Time"}
             </Text>
           </TouchableOpacity>
+          {isMapVisible && (
+            <View style={styles.container}>
+              <MapView
+                style={styles.map}
+                region={mapRegion}
+                marker={
+                  location && {
+                    coordinate: {
+                      latitude: location.latitude,
+                      longitude: location.longitude,
+                    },
+                  }
+                }
+              />
+            </View>
+          )}
           <TouchableOpacity style={styles.button} onPress={getLocationAsync}>
             <Text style={styles.buttonText}>Get Live Location</Text>
           </TouchableOpacity>
@@ -88,7 +135,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
           >
             <Text style={styles.buttonText}>Add Visit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity style={styles.closeButton} onPress={closeLocation}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
         </View>
@@ -156,6 +203,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  map: {
+    width: 250,
+    height: 200,
   },
 });
 

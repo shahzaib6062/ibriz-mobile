@@ -16,29 +16,27 @@ const CustomerCard = ({ name, designation, phoneNumber, address, id }) => {
 
   return (
     <TouchableOpacity onPress={handleCardPress}>
-      <View style={styles.container}>
-        <View style={styles.card}>
-          <View style={styles.userInfoContainer}>
-            <Image source={avatar2} style={styles.avatar} />
-            <View style={styles.userInfo}>
-              <Text style={styles.name}>{name}</Text>
-              <Text style={styles.designation}>{designation}</Text>
-            </View>
+      <View style={styles.card}>
+        <View style={styles.userInfoContainer}>
+          <Image source={avatar2} style={styles.avatar} />
+          <View style={styles.userInfo}>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.designation}>{designation}</Text>
           </View>
-          <View style={styles.contactInfo}>
-            <Image
-              source={phoneLogo}
-              style={{ width: 14, height: 14, marginRight: 5 }}
-            />
-            <Text>{phoneNumber}</Text>
-          </View>
-          <View style={styles.contactInfo}>
-            <Image
-              source={locationLogo}
-              style={{ width: 16, height: 16, marginRight: 5 }}
-            />
-            <Text>{address}</Text>
-          </View>
+        </View>
+        <View style={styles.contactInfo}>
+          <Image
+            source={phoneLogo}
+            style={{ width: 14, height: 14, marginRight: 5 }}
+          />
+          <Text>{phoneNumber}</Text>
+        </View>
+        <View style={styles.contactInfo}>
+          <Image
+            source={locationLogo}
+            style={{ width: 16, height: 16, marginRight: 5 }}
+          />
+          <Text>{address}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -46,16 +44,11 @@ const CustomerCard = ({ name, designation, phoneNumber, address, id }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-
   card: {
     backgroundColor: "#DFE5FF",
     borderRadius: 10,
     padding: 15,
-    width: "100%",
+    width: 300,
   },
   userInfoContainer: {
     flexDirection: "row",
