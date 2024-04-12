@@ -18,6 +18,7 @@ import { StatusBar } from "expo-status-bar";
 const MyHeader = () => {
   const { user } = useSession();
   const navigation = useNavigation();
+
   return (
     <>
       <View
@@ -98,6 +99,55 @@ export default function Layout() {
             title: "Home",
             drawerIcon: ({ size, color }) => (
               <AntDesign name="home" size={size} color={color} />
+            ),
+          }}
+        />
+
+        <Drawer.Screen
+          name="agent/profile"
+          options={{
+            drawerLabel: "Profile",
+            title: "Profile",
+            drawerIcon: ({ size, color }) => (
+              <AntDesign name="user" size={size} color={color} />
+            ),
+            drawerItemStyle: { display: "none", height: 0 },
+          }}
+        />
+
+        <Drawer.Screen
+          name="agent/index"
+          options={{
+            drawerLabel: "Agents List",
+            title: "Agents",
+            drawerIcon: ({ size, color }) => (
+              <AntDesign name="user" size={size} color={color} />
+            ),
+            drawerItemStyle: { display: "none", height: 0 },
+          }}
+        />
+
+        <Drawer.Screen
+          name="listings/agents"
+          options={{
+            drawerLabel: "Agents",
+            title: "Agents",
+            drawerIcon: ({ size, color }) => (
+              <AntDesign name="user" size={size} color={color} />
+            ),
+            drawerItemStyle: {
+              display: user?.data?.type === "sales" ? "flex" : "none",
+            },
+          }}
+        />
+
+        <Drawer.Screen
+          name="listings/customers"
+          options={{
+            drawerLabel: "Customers",
+            title: "Customers",
+            drawerIcon: ({ size, color }) => (
+              <AntDesign name="user" size={size} color={color} />
             ),
           }}
         />

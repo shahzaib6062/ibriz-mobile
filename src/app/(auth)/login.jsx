@@ -10,8 +10,6 @@ import {
 import logo from "../../../assets/svg/login_logo.svg";
 import { useForm, Controller } from "react-hook-form";
 import { useLogin } from "../../Hooks/mutations";
-import loadingLogo from "../../../assets/IBRIZ_logo.png";
-import axios from "axios";
 
 const LoginScreen = () => {
   const {

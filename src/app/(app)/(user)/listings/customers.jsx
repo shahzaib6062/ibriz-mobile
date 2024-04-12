@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: 10,
     color: "gray",
-    marginTop: 10,
+    marginTop: 5,
   },
   header: {
     flexDirection: "row",
@@ -65,12 +65,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const Index = () => {
+const Customers = () => {
   const navigation = useNavigation();
   const { user } = useSession();
   const route = useRoute();
-  const agentId = route.params?.agentId;
-
+  const agentId = user?.data?._id;
   const {
     data: customersData,
     isLoading: isLoadingCustomers,
@@ -166,4 +165,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Customers;

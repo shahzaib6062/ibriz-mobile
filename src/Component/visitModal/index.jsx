@@ -5,6 +5,7 @@ import * as Location from "expo-location";
 import { useSession } from "../../contexts/sessionContext";
 import { useAddVisit } from "../../Hooks/mutations";
 import MapView, { Marker } from "react-native-maps";
+import { TextInput } from "react-native-gesture-handler";
 
 const AddVisitModal = ({ isVisible, onClose, clientId }) => {
   const { user } = useSession();
@@ -14,6 +15,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
   const [isLocationSuccess, setLocationSuccess] = useState(false);
   const [isMapVisible, setMapVisible] = useState(false);
   const [mapRegion, setMapRegion] = useState({});
+  const [remark, setRemark] = useState("");
 
   useEffect(() => {
     setMapVisible(false);
@@ -69,6 +71,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
       client: clientId,
       recordedBy: user?.data?._id,
       visitLocation: [location.longitude, location.latitude],
+      remarks: remark,
     };
     setMapVisible(false);
     addVisit(visitData);
@@ -128,6 +131,16 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
               Location successfully obtained!
             </Text>
           )}
+          <View style={styles.remarkField}>
+            <TextInput
+              style={styles.remarkInput}
+              multiline={true}
+              numberOfLines={4}
+              onChangeText={setRemark}
+              value={remark}
+              placeholder="Enter any relevant remarks for this visit."
+            />
+          </View>
           <TouchableOpacity
             style={[styles.button, !selectedDate && styles.disabledButton]}
             onPress={handleAddVisitData}
@@ -207,6 +220,22 @@ const styles = StyleSheet.create({
   map: {
     width: 250,
     height: 200,
+  },
+  remarkField: {
+    marginBottom: 10, // Add spacing for readability
+  },
+  remarkLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5, // Add spacing between label and input
+  },
+  remarkInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 5,
+    fontSize: 16, // Adjust font size for consistency
+    minHeight: 80, // Set minimum height for multiline input
   },
 });
 

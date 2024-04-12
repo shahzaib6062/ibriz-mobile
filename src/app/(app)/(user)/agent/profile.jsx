@@ -8,7 +8,7 @@ import { useClient, useClientsVisits } from "../../../../Hooks/useQuery";
 import moment from "moment";
 import "moment-timezone";
 import { useNavigation } from "expo-router";
-import loadingLogo from "..././../../../assets/IBRIZ_logo.png";
+import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Image } from "expo-image";
 import backIcon from "../../../../../assets/svg/backArrow.svg";

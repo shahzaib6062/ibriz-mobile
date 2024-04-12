@@ -26,7 +26,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/IBRIZ_logo.png"
+      "favicon": "./assets/IBRIZ_logo.svg"
     },
     "plugins": ["expo-router"]
   }

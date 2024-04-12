@@ -4,7 +4,10 @@ import { AntDesign } from "@expo/vector-icons";
 import CustomerCard from "../../../../Component/CustomerCard";
 import avatar2 from "../../../../../assets/svg/avatar_2.svg";
 import { useRoute } from "@react-navigation/native";
-import { useClientsOfAgent } from "../../../../Hooks/useQuery";
+import {
+  useClientsOfAgent,
+  useFieldAgentsBySalesAgent,
+} from "../../../../Hooks/useQuery";
 import { Image } from "expo-image";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../../contexts/sessionContext";
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: 10,
     color: "gray",
-    marginTop: 10,
+    marginTop: 5,
   },
   header: {
     flexDirection: "row",
@@ -65,18 +68,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const Index = () => {
+const Agents = () => {
   const navigation = useNavigation();
   const { user } = useSession();
-  const route = useRoute();
-  const agentId = route.params?.agentId;
-
   const {
     data: customersData,
     isLoading: isLoadingCustomers,
     isError: isErrorCustomers,
+    error: customersError,
     refetch,
-  } = useClientsOfAgent(agentId);
+  } = useFieldAgentsBySalesAgent();
 
   if (isLoadingCustomers) {
     return (
@@ -166,4 +167,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Agents;

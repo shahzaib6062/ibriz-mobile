@@ -52,3 +52,14 @@ export const useClientsVisits = (clientId) => {
     },
   });
 };
+
+export const UseAgentKpis = () => {
+  const { user } = useSession();
+  const type = user?.data?.type === "field" ? "fieldAgent" : "salesAgent";
+  return useQuery({
+    queryKey: ["agentKpis"],
+    queryFn: () => {
+      return axios.get(`${api_url}/kpis/${type}`);
+    },
+  });
+};

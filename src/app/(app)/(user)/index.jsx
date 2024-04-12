@@ -1,18 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
 import FilterKPI from "../../../Component/FilterKpi";
 import { AntDesign } from "@expo/vector-icons";
 import AgentsCard from "../../../Component/AgentsCard";
-import loadingLogo from "../../../../assets/IBRIZ_logo.png";
+import loadingLogo from "../../../../assets/IBRIZ_logo.svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import arrowHead from "../../../../assets/svg/arrowHead.svg";
 
 import {
+  UseAgentKpis,
   useClientsByAgent,
   useFieldAgentsBySalesAgent,
 } from "../../../Hooks/useQuery";
 import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSession } from "../../../contexts/sessionContext";
 
 const styles = StyleSheet.create({
   title: {
@@ -44,6 +45,8 @@ const styles = StyleSheet.create({
 });
 
 export default function Index() {
+  const { user } = useSession();
+  const [kpiData, setKpiData] = useState([]);
   const {
     data: clientsByAgent,
     isLoading: isLoadingClients,
@@ -60,19 +63,59 @@ export default function Index() {
     refetch: refetchFieldAgents,
   } = useFieldAgentsBySalesAgent();
 
-  const kpiData = [
-    {
-      value:
-        fieldAgentsBySalesAgent?.data && fieldAgentsBySalesAgent?.data?.count,
-      unit: "",
-      label: "Total Field Agents",
-    },
-    {
-      value: clientsByAgent?.data && clientsByAgent?.data?.count,
-      unit: "",
-      label: "Total Customers",
-    },
-  ];
+  const {
+    data: agentKpis,
+    isLoading: isLoadingAgentKpis,
+    isError: isErrorAgentKpis,
+    isSuccess: isSuccessAgentKpis,
+    refetch: refetchAgentKpis,
+  } = UseAgentKpis();
+
+  useEffect(() => {
+    if (user?.data?.type === "field" && agentKpis?.data) {
+      setKpiData([
+        {
+          value: agentKpis.data?.data?.totalClients || 0,
+          unit: "",
+          label: "Total customers",
+          change: "",
+        },
+        {
+          value: agentKpis?.data?.data?.totalPumpsRunning || 0,
+          unit: "",
+          label: "Total pump running",
+          change: "",
+        },
+        {
+          value: agentKpis?.data?.data?.pendingOrders || 0,
+          unit: "",
+          label: "Total pending orders",
+          change: "",
+        },
+      ]);
+    } else if (user?.data?.type === "sales" && agentKpis?.data) {
+      setKpiData([
+        {
+          value: agentKpis?.data?.data?.totalFieldAgents || 0,
+          unit: "",
+          label: "Total field agents",
+          change: "",
+        },
+        {
+          value: agentKpis?.data?.data?.totalClients || 0,
+          unit: "",
+          label: "Total customer",
+          change: "",
+        },
+        {
+          value: agentKpis?.data?.data?.pendingOrders || 0,
+          unit: "",
+          label: "Total pending orders",
+          change: "",
+        },
+      ]);
+    }
+  }, [agentKpis]);
 
   if (isLoadingClients || isLoadingFieldAgents) {
     return (
@@ -84,20 +127,22 @@ export default function Index() {
           }}
         >
           <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
-            Error fetch again
+            loading...
           </Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  if (isErrorFieldAgents || isErrorClients) {
+  if (isErrorFieldAgents && isErrorClients) {
     return (
       <View style={styles.loadingContainer}>
         <Image source={loadingLogo} width={"50%"} height={100} />
-        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
-          Loading...
-        </Text>
+        <TouchableOpacity onPress={(() => refetchFieldAgents, refetchClients)}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Error fetching data
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -108,9 +153,10 @@ export default function Index() {
         <View style={styles.container}>
           <Text style={styles.title}>Overview</Text>
         </View>
-        {kpiData.map((item, index) => (
-          <FilterKPI key={index} kpiData={item} />
-        ))}
+        {kpiData &&
+          kpiData.map((item, index) => (
+            <FilterKPI key={index} kpiData={item} />
+          ))}
 
         {fieldAgentsBySalesAgent &&
           fieldAgentsBySalesAgent.data?.count === 0 &&
