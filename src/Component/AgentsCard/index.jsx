@@ -3,8 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import avatar1 from "../../../assets/svg/avatar_1.svg";
+import avatar2 from "../../../assets/svg/avatar_2.svg";
 import groupAvatar from "../../../assets/svg/group_avatar.svg";
 const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
+  console.log("🚀 ~ AgentsCard ~ designation:", designation);
   const navigation = useNavigation();
 
   const handleCardPress = () => {
@@ -19,7 +21,10 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
     <TouchableOpacity onPress={handleCardPress} style={styles.container}>
       <View style={styles.row}>
         <View style={styles.userInfoContainer}>
-          <Image source={avatar1} style={styles.avatar} />
+          <Image
+            source={designation === "Field Agent" ? avatar2 : avatar1}
+            style={styles.avatar}
+          />
           <View>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.designation}>{designation}</Text>

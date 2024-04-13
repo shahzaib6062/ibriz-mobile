@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   CustomerCard: {
     display: "flex",
     flexDirection: "column",
+    overflowX: "hidden",
   },
 });
 
@@ -151,9 +152,9 @@ const Customers = () => {
         customersData.data &&
         Array.isArray(customersData?.data?.data) && (
           <ScrollView
-            horizontal
+            vertical
             contentContainerStyle={styles.CustomerCard}
-            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
           >
             {customersData?.data?.data.map((customer, index) => (
               <CustomerCard

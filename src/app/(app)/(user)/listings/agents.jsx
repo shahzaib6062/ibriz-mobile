@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     display: "flex",
     flexDirection: "column",
+    overflowX: "hidden",
   },
 });
 
@@ -142,7 +143,7 @@ const Agents = () => {
       </View>
       <View style={styles.header}>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Assigned agents</Text>
+          <Text style={styles.headerText}>Assigned Agents</Text>
         </View>
         <View style={styles.pill}>
           <Text style={styles.pillText}>
@@ -154,9 +155,9 @@ const Agents = () => {
         customersData.data &&
         Array.isArray(customersData?.data?.data) && (
           <ScrollView
-            horizontal
+            vertical
             contentContainerStyle={styles.CustomerCard}
-            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
           >
             {customersData?.data?.data.map((customer, index) => (
               <CustomerCard

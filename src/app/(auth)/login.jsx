@@ -22,6 +22,7 @@ const LoginScreen = () => {
   const { mutate: login, isLoading, error: loginError } = useLogin();
   const [loginLoading, setLoginLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const onSubmit = async (data) => {
     setLoginLoading(true);
@@ -77,7 +78,9 @@ const LoginScreen = () => {
                 placeholder="Enter your password"
                 onChangeText={field.onChange}
                 value={field.value}
-                secureTextEntry
+                // icon={<Icon name={isPasswordVisible ? "eye" : "eye-off"} />}
+                secureTextEntry={!isPasswordVisible}
+                onIconPress={() => setIsPasswordVisible(!isPasswordVisible)}
               />
             )}
             name="password"

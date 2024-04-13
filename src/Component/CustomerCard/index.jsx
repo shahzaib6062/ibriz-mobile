@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import avatar2 from "../../../assets/svg/avatar_2.svg";
+import avatar1 from "../../../assets/svg/avatar_1.svg";
 import mailLogo from "../../../assets/svg/mail_logo.svg";
 import phoneLogo from "../../../assets/svg/call_logo.svg";
 import locationLogo from "../../../assets/svg/location_logo.svg";
@@ -30,7 +31,10 @@ const CustomerCard = ({
     <TouchableOpacity onPress={handleCardPress}>
       <View style={styles.card}>
         <View style={styles.userInfoContainer}>
-          <Image source={avatar2} style={styles.avatar} />
+          <Image
+            source={designation === "Field Agent" ? avatar2 : avatar1}
+            style={styles.avatar}
+          />
           <View style={styles.userInfo}>
             <Text style={styles.name}>{name}</Text>
             <View

@@ -142,7 +142,7 @@ export default function Index() {
     return (
       <View style={styles.loadingContainer}>
         <Image source={loadingLogo} width={"50%"} height={100} />
-        <TouchableOpacity onPress={(() => refetchFieldAgents, refetchClients)}>
+        <TouchableOpacity onPress={refetchFunc}>
           <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
             Error fetching data
           </Text>
@@ -150,6 +150,12 @@ export default function Index() {
       </View>
     );
   }
+
+  const refetchFunc = () => {
+    refetchClients();
+    refetchFieldAgents();
+    refetchAgentKpis();
+  };
 
   return (
     <ScrollView>
@@ -173,9 +179,7 @@ export default function Index() {
                   alignItems: "end",
                   marginTop: 20,
                 }}
-                onPress={
-                  (() => refetchFieldAgents, refetchClients, refetchAgentKpis)
-                }
+                onPress={refetchFunc}
               >
                 <Text
                   style={{
