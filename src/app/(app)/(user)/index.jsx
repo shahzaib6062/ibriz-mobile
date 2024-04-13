@@ -53,10 +53,6 @@ export default function Index() {
     error: errorClients,
     refetch: refetchClients,
   } = useClientsByAgent();
-  console.log(
-    "🚀 ~ Index ~ clientsByAgent:",
-    clientsByAgent?.data?.data[0]?.orderStatus
-  );
 
   const {
     data: fieldAgentsBySalesAgent,

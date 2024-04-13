@@ -149,7 +149,7 @@ const Index = () => {
         Array.isArray(customersData?.data?.data) && (
           <ScrollView
             horizontal
-            contentContainerStyle={styles.CustomerCard}
+            contentContainerStyle={{ display: "flex", flexDirection: "column" }}
             showsHorizontalScrollIndicator={false}
           >
             {customersData?.data?.data.map((customer, index) => (

@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView,
 } from "react-native";
 import logo from "../../../assets/svg/login_logo.svg";
 import { useForm, Controller } from "react-hook-form";

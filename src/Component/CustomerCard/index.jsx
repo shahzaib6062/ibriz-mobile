@@ -35,20 +35,22 @@ const CustomerCard = ({
               }}
             >
               {/* <Text style={styles.designation}>{designation}</Text> */}
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "bold",
-                  color: "#0432FF",
-                  marginLeft: 5,
-                  backgroundColor: "#D7DCF0",
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  borderRadius: 15,
-                }}
-              >
-                {orderStatus}
-              </Text>
+              {orderStatus && (
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "bold",
+                    color: "#0432FF",
+                    marginLeft: 5,
+                    backgroundColor: "#D7DCF0",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    borderRadius: 15,
+                  }}
+                >
+                  {orderStatus}
+                </Text>
+              )}
             </View>
           </View>
         </View>
@@ -59,13 +61,15 @@ const CustomerCard = ({
           />
           <Text>{phoneNumber}</Text>
         </View>
-        <View style={styles.contactInfo}>
-          <Image
-            source={locationLogo}
-            style={{ width: 16, height: 16, marginRight: 5 }}
-          />
-          <Text>{address}</Text>
-        </View>
+        {address && (
+          <View style={styles.contactInfo}>
+            <Image
+              source={locationLogo}
+              style={{ width: 16, height: 16, marginRight: 5 }}
+            />
+            <Text>{address}</Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );

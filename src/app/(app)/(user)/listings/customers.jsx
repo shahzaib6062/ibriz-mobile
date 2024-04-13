@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
 const Customers = () => {
   const navigation = useNavigation();
   const { user } = useSession();
-  console.log("🚀 ~ Customers ~ user:", user);
   const route = useRoute();
   const agentId = user?.data?._id;
   const {

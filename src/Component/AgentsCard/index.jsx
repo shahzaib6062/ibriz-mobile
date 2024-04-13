@@ -5,7 +5,6 @@ import { useNavigation } from "@react-navigation/native";
 import avatar1 from "../../../assets/svg/avatar_1.svg";
 import groupAvatar from "../../../assets/svg/group_avatar.svg";
 const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
-  console.log("🚀 ~ AgentsCard ~ orderStatus:", orderStatus);
   const navigation = useNavigation();
 
   const handleCardPress = () => {
@@ -28,11 +27,13 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
         </View>
       </View>
       <View style={styles.row}>
-        <View style={styles.customerCountContainer}>
-          <Text style={{ ...styles.customerCount, color: "#0432FF" }}>
-            {orderStatus}
-          </Text>
-        </View>
+        {orderStatus && (
+          <View style={styles.customerCountContainer}>
+            <Text style={{ ...styles.customerCount, color: "#0432FF" }}>
+              {orderStatus}
+            </Text>
+          </View>
+        )}
         <View style={styles.groupAvatarContainer}>
           <Image source={groupAvatar} style={styles.groupAvatar} />
         </View>
