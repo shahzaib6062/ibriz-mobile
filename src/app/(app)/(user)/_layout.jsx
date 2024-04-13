@@ -15,6 +15,7 @@ import avatar from "../../../../assets/svg/avatar_2.svg";
 import drawerIcon from "../../../../assets/svg/drawerIcon.svg";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
+import { Feather } from "@expo/vector-icons";
 const MyHeader = () => {
   const { user } = useSession();
   const navigation = useNavigation();
@@ -133,7 +134,7 @@ export default function Layout() {
             drawerLabel: "Agents",
             title: "Agents",
             drawerIcon: ({ size, color }) => (
-              <AntDesign name="user" size={size} color={color} />
+              <Feather name="users" size={size} color={color} />
             ),
             drawerItemStyle: {
               display: user?.data?.type === "sales" ? "flex" : "none",
