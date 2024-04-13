@@ -142,7 +142,7 @@ const Agents = () => {
       </View>
       <View style={styles.header}>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Assigned Customer</Text>
+          <Text style={styles.headerText}>Assigned agents</Text>
         </View>
         <View style={styles.pill}>
           <Text style={styles.pillText}>

@@ -15,10 +15,15 @@ const CustomerCard = ({
   id,
   orderStatus,
 }) => {
+  console.log("🚀 ~ designation:", designation);
   const navigation = useNavigation();
 
   const handleCardPress = () => {
-    navigation.navigate("agent/profile", { clientId: id });
+    if (designation === "Field Agent") {
+      navigation.navigate("agent/index", { agentId: id });
+    } else {
+      navigation.navigate("agent/profile", { clientId: id });
+    }
   };
 
   return (
