@@ -5,7 +5,6 @@ import { AntDesign } from "@expo/vector-icons";
 import AgentsCard from "../../../Component/AgentsCard";
 import loadingLogo from "../../../../assets/IBRIZ_logo.svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import {
   UseAgentKpis,
   useClientsByAgent,
@@ -14,6 +13,7 @@ import {
 import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../contexts/sessionContext";
+import { EvilIcons } from "@expo/vector-icons";
 
 const styles = StyleSheet.create({
   title: {
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
 });
-
 export default function Index() {
   const { user } = useSession();
   const [kpiData, setKpiData] = useState([]);
@@ -54,6 +53,10 @@ export default function Index() {
     error: errorClients,
     refetch: refetchClients,
   } = useClientsByAgent();
+  console.log(
+    "🚀 ~ Index ~ clientsByAgent:",
+    clientsByAgent?.data?.data[0]?.orderStatus
+  );
 
   const {
     data: fieldAgentsBySalesAgent,
@@ -70,7 +73,6 @@ export default function Index() {
     isSuccess: isSuccessAgentKpis,
     refetch: refetchAgentKpis,
   } = UseAgentKpis();
-
   useEffect(() => {
     if (user?.data?.type === "field" && agentKpis?.data) {
       setKpiData([
@@ -79,18 +81,21 @@ export default function Index() {
           unit: "",
           label: "Total customers",
           change: "",
+          icon: "addusergroup",
         },
         {
           value: agentKpis?.data?.data?.totalPumpsRunning || 0,
           unit: "",
           label: "Total pump running",
           change: "",
+          icon: "antdesign",
         },
         {
           value: agentKpis?.data?.data?.pendingOrders || 0,
           unit: "",
           label: "Total pending orders",
           change: "",
+          icon: "clockcircleo",
         },
       ]);
     } else if (user?.data?.type === "sales" && agentKpis?.data) {
@@ -100,18 +105,21 @@ export default function Index() {
           unit: "",
           label: "Total field agents",
           change: "",
+          icon: "user",
         },
         {
           value: agentKpis?.data?.data?.totalClients || 0,
           unit: "",
-          label: "Total customer",
+          label: "Total customers",
           change: "",
+          icon: "addusergroup",
         },
         {
           value: agentKpis?.data?.data?.pendingOrders || 0,
           unit: "",
           label: "Total pending orders",
           change: "",
+          icon: "clockcircleo",
         },
       ]);
     }
@@ -151,7 +159,42 @@ export default function Index() {
     <ScrollView>
       <View style={styles.appLayout}>
         <View style={styles.container}>
-          <Text style={styles.title}>Overview</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <View>
+              <Text style={styles.title}>Overview</Text>
+            </View>
+            <View>
+              <TouchableOpacity
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "end",
+                  marginTop: 20,
+                }}
+                onPress={
+                  (() => refetchFieldAgents, refetchClients, refetchAgentKpis)
+                }
+              >
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    fontWeight: "bold",
+                    color: "#0432FF",
+                    fontSize: 12,
+                  }}
+                >
+                  Refresh
+                </Text>
+                <EvilIcons name="refresh" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
         {kpiData &&
           kpiData.map((item, index) => (
@@ -181,12 +224,12 @@ export default function Index() {
         {fieldAgentsBySalesAgent && fieldAgentsBySalesAgent.data?.count > 0 && (
           <View style={styles.container}>
             <Text style={styles.title}>Field Agents</Text>
-            <AntDesign
+            {/* <AntDesign
               name="arrowright"
               size={24}
               color="black"
               style={{ marginRight: 10, marginTop: 15 }}
-            />
+            /> */}
           </View>
         )}
         <ScrollView
@@ -204,6 +247,7 @@ export default function Index() {
                 name={agent?.name}
                 designation="Field Agent"
                 totalCustomers={100}
+                orderStatus={agent?.orderStatus}
               />
             ))}
         </ScrollView>
@@ -211,12 +255,12 @@ export default function Index() {
           <View>
             <View style={styles.container}>
               <Text style={styles.title}>Customers</Text>
-              <AntDesign
+              {/* <AntDesign
                 name="arrowright"
                 size={24}
                 color="black"
                 style={{ marginRight: 10, marginTop: 15 }}
-              />
+              /> */}
             </View>
             {clientsByAgent &&
               clientsByAgent.data &&
@@ -233,6 +277,7 @@ export default function Index() {
                       designation="Customer"
                       totalCustomers={100}
                       id={client?._id}
+                      orderStatus={client?.orderStatus}
                     />
                   ))}
                 </ScrollView>

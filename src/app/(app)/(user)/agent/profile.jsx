@@ -12,6 +12,7 @@ import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Image } from "expo-image";
 import backIcon from "../../../../../assets/svg/backArrow.svg";
+import { EvilIcons } from "@expo/vector-icons";
 const Profile = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -102,6 +103,9 @@ const Profile = () => {
         <View style={styles.pill}>
           <Text style={styles.pillText}>{visitData?.data?.count}</Text>
         </View>
+        {isLoadingVisits && (
+          <EvilIcons name="refresh" size={24} color="black" />
+        )}
       </View>
       <ScrollView>
         {visitData &&

@@ -63,11 +63,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#E0E0E0",
     alignSelf: "center",
   },
+  CustomerCard: {
+    display: "flex",
+    flexDirection: "column",
+  },
 });
 
 const Customers = () => {
   const navigation = useNavigation();
   const { user } = useSession();
+  console.log("🚀 ~ Customers ~ user:", user);
   const route = useRoute();
   const agentId = user?.data?._id;
   const {
@@ -129,7 +134,9 @@ const Customers = () => {
         </TouchableOpacity>
         <Image source={avatar2} style={styles.avatar} />
         <Text style={styles.titleText}>{user?.data?.name}</Text>
-        <Text style={styles.titleDesignationText}>{user?.data?.role}</Text>
+        <Text style={styles.titleDesignationText}>
+          {user?.data?.type} {user?.data?.role}
+        </Text>
       </View>
       <View style={styles.header}>
         <View style={styles.headerTextContainer}>
@@ -153,10 +160,11 @@ const Customers = () => {
               <CustomerCard
                 key={index}
                 name={customer?.name}
-                designation="Field Agent"
+                designation="customer"
                 phoneNumber="1234567890"
                 address={customer?.clientLocation}
                 id={customer._id}
+                orderStatus={customer?.orderStatus}
               />
             ))}
           </ScrollView>

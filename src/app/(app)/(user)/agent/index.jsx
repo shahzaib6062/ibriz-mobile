@@ -130,7 +130,9 @@ const Index = () => {
         </TouchableOpacity>
         <Image source={avatar2} style={styles.avatar} />
         <Text style={styles.titleText}>{user?.data?.name}</Text>
-        <Text style={styles.titleDesignationText}>{user?.data?.role}</Text>
+        <Text style={styles.titleDesignationText}>
+          {user?.data?.type} {user?.data?.role}
+        </Text>
       </View>
       <View style={styles.header}>
         <View style={styles.headerTextContainer}>

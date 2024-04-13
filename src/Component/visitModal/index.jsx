@@ -22,6 +22,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setLocation(false);
     setSelectedDate(null);
     setSelectedDate(false);
+    setRemark("");
   }, []);
   const {
     mutate: addVisit,
@@ -64,8 +65,28 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setLocationSuccess(true);
     setMapVisible(true);
   };
-
+  const checkSubmitDisabled = () => {
+    if (!selectedDate) {
+      return true;
+    }
+    if (!remark) {
+      return true;
+    }
+    if (!location) {
+      return true;
+    }
+    return false;
+  };
   const handleAddVisitData = () => {
+    if (!selectedDate) {
+      return;
+    }
+    if (!remark) {
+      return;
+    }
+    if (!location) {
+      return;
+    }
     const visitData = {
       harvestDateTime: selectedDate.toISOString(),
       client: clientId,
@@ -78,11 +99,13 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setSelectedDate(null);
     setLocation(null);
     setLocationSuccess(false);
+    setRemark("");
     onClose();
   };
 
   const closeLocation = () => {
     setSelectedDate(null);
+    setRemark("");
     setLocation(null);
     setLocationSuccess(false);
     setMapVisible(false);
@@ -142,9 +165,12 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
             />
           </View>
           <TouchableOpacity
-            style={[styles.button, !selectedDate && styles.disabledButton]}
+            style={[
+              styles.button,
+              checkSubmitDisabled() && styles.disabledButton,
+            ]}
             onPress={handleAddVisitData}
-            disabled={!selectedDate}
+            disabled={checkSubmitDisabled()}
           >
             <Text style={styles.buttonText}>Add Visit</Text>
           </TouchableOpacity>

@@ -7,7 +7,14 @@ import phoneLogo from "../../../assets/svg/call_logo.svg";
 import locationLogo from "../../../assets/svg/location_logo.svg";
 import { Image } from "expo-image";
 
-const CustomerCard = ({ name, designation, phoneNumber, address, id }) => {
+const CustomerCard = ({
+  name,
+  designation,
+  phoneNumber,
+  address,
+  id,
+  orderStatus,
+}) => {
   const navigation = useNavigation();
 
   const handleCardPress = () => {
@@ -21,7 +28,28 @@ const CustomerCard = ({ name, designation, phoneNumber, address, id }) => {
           <Image source={avatar2} style={styles.avatar} />
           <View style={styles.userInfo}>
             <Text style={styles.name}>{name}</Text>
-            <Text style={styles.designation}>{designation}</Text>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              {/* <Text style={styles.designation}>{designation}</Text> */}
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "bold",
+                  color: "#0432FF",
+                  marginLeft: 5,
+                  backgroundColor: "#D7DCF0",
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  borderRadius: 15,
+                }}
+              >
+                {orderStatus}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.contactInfo}>
@@ -49,6 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     width: 300,
+    marginBottom: 10,
   },
   userInfoContainer: {
     flexDirection: "row",

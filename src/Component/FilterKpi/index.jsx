@@ -1,34 +1,16 @@
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import pumpLogo from "../../../assets/svg/pump_logo.svg";
-import clientLogo from "../../../assets/svg/client_logo.svg";
-import agentLogo from "../../../assets/svg/agent_logo.svg";
-import logo from "../../../assets/svg/avatar_1.svg";
-import { Image } from "expo-image";
+import { AntDesign } from "@expo/vector-icons";
 const { width } = Dimensions.get("window");
+
 const logoSize = width * 0.11;
 
 const FilterKPI = ({ kpiData }) => {
-  const kpiLogo =
-    kpiData.label === "Total Field Agents"
-      ? pumpLogo
-      : kpiData.label === "Total Customers"
-      ? clientLogo
-      : agentLogo;
-
   return (
     <View style={styles.container}>
       <View style={styles.itemContainer}>
         <View style={styles.imageContainer}>
-          <Image
-            source={kpiLogo}
-            style={{
-              width: logoSize,
-              height: logoSize,
-              objectFit: "contain",
-              padding: 10,
-            }}
-          />
+          <AntDesign name={kpiData?.icon} size={24} color="black" />
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.row}>

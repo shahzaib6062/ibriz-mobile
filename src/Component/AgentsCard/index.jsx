@@ -4,7 +4,8 @@ import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import avatar1 from "../../../assets/svg/avatar_1.svg";
 import groupAvatar from "../../../assets/svg/group_avatar.svg";
-const AgentsCard = ({ name, designation, totalCustomers, id }) => {
+const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
+  console.log("🚀 ~ AgentsCard ~ orderStatus:", orderStatus);
   const navigation = useNavigation();
 
   const handleCardPress = () => {
@@ -29,7 +30,7 @@ const AgentsCard = ({ name, designation, totalCustomers, id }) => {
       <View style={styles.row}>
         <View style={styles.customerCountContainer}>
           <Text style={{ ...styles.customerCount, color: "#0432FF" }}>
-            {totalCustomers} customers
+            {orderStatus}
           </Text>
         </View>
         <View style={styles.groupAvatarContainer}>
