@@ -6,7 +6,6 @@ import avatar1 from "../../../assets/svg/avatar_1.svg";
 import avatar2 from "../../../assets/svg/avatar_2.svg";
 import groupAvatar from "../../../assets/svg/group_avatar.svg";
 const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
-  console.log("🚀 ~ AgentsCard ~ designation:", designation);
   const navigation = useNavigation();
 
   const handleCardPress = () => {

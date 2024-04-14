@@ -24,6 +24,19 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setSelectedDate(false);
     setRemark("");
   }, []);
+
+  useEffect(() => {
+    const requestLocationPermission = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        // Handle permission denial (optional)
+      }
+    };
+
+    requestLocationPermission();
+  }, []);
+
   const {
     mutate: addVisit,
     isLoading: addVisitLoading,

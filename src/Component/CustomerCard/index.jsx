@@ -16,7 +16,6 @@ const CustomerCard = ({
   id,
   orderStatus,
 }) => {
-  console.log("🚀 ~ designation:", designation);
   const navigation = useNavigation();
 
   const handleCardPress = () => {
