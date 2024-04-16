@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-// import * as Location from "expo-location";
+import * as Location from "expo-location";
 import { useSession } from "../../contexts/sessionContext";
 import { useAddVisit } from "../../Hooks/mutations";
-// import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { TextInput } from "react-native-gesture-handler";
 
 const AddVisitModal = ({ isVisible, onClose, clientId }) => {
@@ -25,17 +25,17 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setRemark("");
   }, []);
 
-  // useEffect(() => {
-  //   const requestLocationPermission = async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Permission to access location was denied");
-  //       // Handle permission denial (optional)
-  //     }
-  //   };
+  useEffect(() => {
+    const requestLocationPermission = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        // Handle permission denial (optional)
+      }
+    };
 
-  //   requestLocationPermission();
-  // }, []);
+    requestLocationPermission();
+  }, []);
 
   const {
     mutate: addVisit,
@@ -55,29 +55,29 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setSelectedDate(date);
     hideDatePicker();
   };
-  // useEffect(() => {
-  //   if (location) {
-  //     setMapRegion({
-  //       latitude: location.latitude,
-  //       longitude: location.longitude,
-  //       latitudeDelta: 0.015,
-  //       longitudeDelta: 0.015,
-  //     });
-  //   }
-  // }, [location]);
+  useEffect(() => {
+    if (location) {
+      setMapRegion({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.015,
+      });
+    }
+  }, [location]);
 
-  // const getLocationAsync = async () => {
-  //   let { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== "granted") {
-  //     console.log("Permission to access location was denied");
-  //     return;
-  //   }
+  const getLocationAsync = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+      return;
+    }
 
-  //   let location = await Location.getCurrentPositionAsync({});
-  //   setLocation(location.coords);
-  //   setLocationSuccess(true);
-  //   setMapVisible(true);
-  // };
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location.coords);
+    setLocationSuccess(true);
+    setMapVisible(true);
+  };
   const checkSubmitDisabled = () => {
     if (!selectedDate) {
       return true;
@@ -127,79 +127,78 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
   };
 
   return (
-    <></>
-    // <Modal
-    //   animationType="slide"
-    //   transparent={true}
-    //   visible={isVisible}
-    //   onRequestClose={closeLocation}
-    // >
-    //   <View style={styles.modalContainer}>
-    //     <View style={styles.modalContent}>
-    //       <Text style={styles.modalTitle}>Visit Details</Text>
-    //       <TouchableOpacity style={styles.button} onPress={showDatePicker}>
-    //         <Text style={styles.buttonText}>
-    //           {selectedDate
-    //             ? selectedDate.toLocaleString()
-    //             : "Select Date & Time"}
-    //         </Text>
-    //       </TouchableOpacity>
-    //       {isMapVisible && (
-    //         <View style={styles.container}>
-    //           <MapView
-    //             style={styles.map}
-    //             region={mapRegion}
-    //             marker={
-    //               location && {
-    //                 coordinate: {
-    //                   latitude: location.latitude,
-    //                   longitude: location.longitude,
-    //                 },
-    //               }
-    //             }
-    //           />
-    //         </View>
-    //       )}
-    //       <TouchableOpacity style={styles.button} onPress={getLocationAsync}>
-    //         <Text style={styles.buttonText}>Get Live Location</Text>
-    //       </TouchableOpacity>
-    //       {isLocationSuccess && (
-    //         <Text style={styles.successText}>
-    //           Location successfully obtained!
-    //         </Text>
-    //       )}
-    //       <View style={styles.remarkField}>
-    //         <TextInput
-    //           style={styles.remarkInput}
-    //           multiline={true}
-    //           numberOfLines={4}
-    //           onChangeText={setRemark}
-    //           value={remark}
-    //           placeholder="Enter any relevant remarks for this visit."
-    //         />
-    //       </View>
-    //       <TouchableOpacity
-    //         style={[
-    //           styles.button,
-    //           checkSubmitDisabled() && styles.disabledButton,
-    //         ]}
-    //         onPress={handleAddVisitData}
-    //         disabled={checkSubmitDisabled()}
-    //       >
-    //         <Text style={styles.buttonText}>Add Visit</Text>
-    //       </TouchableOpacity>
-    //       <TouchableOpacity style={styles.closeButton} onPress={closeLocation}>
-    //         <Text style={styles.closeButtonText}>Close</Text>
-    //       </TouchableOpacity>
-    //     </View>
-    //     <DateTimePickerModal
-    //       isVisible={isDatePickerVisible}
-    //       mode="datetime"
-    //       onConfirm={handleConfirmDate}
-    //       onCancel={hideDatePicker}
-    //     />
-    //   </View>
-    // </Modal>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isVisible}
+      onRequestClose={closeLocation}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Visit Details</Text>
+          <TouchableOpacity style={styles.button} onPress={showDatePicker}>
+            <Text style={styles.buttonText}>
+              {selectedDate
+                ? selectedDate.toLocaleString()
+                : "Select Date & Time"}
+            </Text>
+          </TouchableOpacity>
+          {isMapVisible && (
+            <View style={styles.container}>
+              <MapView
+                style={styles.map}
+                region={mapRegion}
+                marker={
+                  location && {
+                    coordinate: {
+                      latitude: location.latitude,
+                      longitude: location.longitude,
+                    },
+                  }
+                }
+              />
+            </View>
+          )}
+          <TouchableOpacity style={styles.button} onPress={getLocationAsync}>
+            <Text style={styles.buttonText}>Get Live Location</Text>
+          </TouchableOpacity>
+          {isLocationSuccess && (
+            <Text style={styles.successText}>
+              Location successfully obtained!
+            </Text>
+          )}
+          <View style={styles.remarkField}>
+            <TextInput
+              style={styles.remarkInput}
+              multiline={true}
+              numberOfLines={4}
+              onChangeText={setRemark}
+              value={remark}
+              placeholder="Enter any relevant remarks for this visit."
+            />
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              checkSubmitDisabled() && styles.disabledButton,
+            ]}
+            onPress={handleAddVisitData}
+            disabled={checkSubmitDisabled()}
+          >
+            <Text style={styles.buttonText}>Add Visit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.closeButton} onPress={closeLocation}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="datetime"
+          onConfirm={handleConfirmDate}
+          onCancel={hideDatePicker}
+        />
+      </View>
+    </Modal>
   );
 };
 
@@ -280,4 +279,3 @@ const styles = StyleSheet.create({
 });
 
 export default AddVisitModal;
-h;
