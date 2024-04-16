@@ -261,12 +261,12 @@ const styles = StyleSheet.create({
     height: 200,
   },
   remarkField: {
-    marginBottom: 10, // Add spacing for readability
+    marginBottom: 10,
   },
   remarkLabel: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 5, // Add spacing between label and input
+    marginBottom: 5,
   },
   remarkInput: {
     borderWidth: 1,
