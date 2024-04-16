@@ -7,6 +7,7 @@ import mailLogo from "../../../assets/svg/mail_logo.svg";
 import phoneLogo from "../../../assets/svg/call_logo.svg";
 import locationLogo from "../../../assets/svg/location_logo.svg";
 import { Image } from "expo-image";
+import { router } from 'expo-router';
 
 const CustomerCard = ({
   name,
@@ -16,13 +17,11 @@ const CustomerCard = ({
   id,
   orderStatus,
 }) => {
-  const navigation = useNavigation();
-
   const handleCardPress = () => {
     if (designation === "Field Agent") {
-      navigation.navigate("agent/index", { agentId: id });
+      router.navigate("agent/index", { agentId: id });
     } else {
-      navigation.navigate("agent/profile", { clientId: id });
+      router.navigate("agent/profile", { clientId: id });
     }
   };
 
