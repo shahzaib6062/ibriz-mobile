@@ -5,14 +5,20 @@ import { useNavigation } from "@react-navigation/native";
 import avatar1 from "../../../assets/svg/avatar_1.svg";
 import avatar2 from "../../../assets/svg/avatar_2.svg";
 import groupAvatar from "../../../assets/svg/group_avatar.svg";
-const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
-  const navigation = useNavigation();
+import { router } from "expo-router";
 
+const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
   const handleCardPress = () => {
     if (designation === "Field Agent") {
-      navigation.navigate("agent/index", { agentId: id });
+      router.navigate({
+        pathname: "agent",
+        params: { agentId: id },
+      });
     } else if (designation === "Customer") {
-      navigation.navigate("agent/profile", { clientId: id });
+      router.navigate({
+        pathname: "agent/profile",
+        params: { agentId: id },
+      });
     }
   };
 
