@@ -130,6 +130,10 @@ const Profile = () => {
                   label: "Pump Status",
                   value: visit.pumpStatus === 1 ? "ON" : "OFF",
                 },
+                {
+                  label: "Remarks",
+                  value: visit.remarks,
+                },
               ]}
             />
           ))}

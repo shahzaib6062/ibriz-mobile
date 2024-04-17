@@ -159,7 +159,7 @@ const Customers = () => {
               <CustomerCard
                 key={index}
                 name={customer?.name}
-                designation="customer"
+                designation="Customer"
                 phoneNumber="1234567890"
                 address={customer?.clientLocation}
                 id={customer._id}

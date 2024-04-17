@@ -22,10 +22,10 @@ const CustomerCard = ({
   const handleCardPress = () => {
     if (designation === "Field Agent") {
       router.navigate({
-        pathname: "agent/index",
+        pathname: "agent",
         params: { agentId: id },
       });
-    } else {
+    } else if (designation === "Customer") {
       router.navigate({
         pathname: "agent/profile",
         params: { clientId: id },
