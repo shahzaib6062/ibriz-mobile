@@ -7,22 +7,40 @@ import {
   Modal,
   Linking,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
 
 const HarvestDataCard = ({ data }) => {
   const [showFullText, setShowFullText] = useState({});
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedFullText, setSelectedFullText] = useState(null);
 
   const handleValueClick = (index, value) => {
     if (value instanceof Array) {
-      setSelectedLocation(value);
+      const reverseArray = value.slice().reverse();
+      openGoogleMaps(reverseArray);
     } else {
       setShowFullText((prev) => ({ ...prev, [index]: !prev[index] }));
+      setSelectedFullText(value);
     }
   };
 
-  const closeMapViewModal = () => {
-    setSelectedLocation(null);
+  const closeFullTextModal = () => {
+    setSelectedFullText(null);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (typeof text !== "string") {
+      return text;
+    }
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + "...";
+    }
+    return text;
+  };
+
+  const openGoogleMaps = (location) => {
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      location.join(",")
+    )}`;
+    Linking.openURL(url);
   };
 
   return (
@@ -46,34 +64,16 @@ const HarvestDataCard = ({ data }) => {
         </View>
       ))}
       <Modal
-        visible={selectedLocation !== null}
-        onRequestClose={closeMapViewModal}
+        visible={selectedFullText !== null}
+        onRequestClose={closeFullTextModal}
         transparent={true}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {selectedLocation && (
-              <MapView
-                style={styles.map}
-                initialRegion={{
-                  latitude: selectedLocation[0],
-                  longitude: selectedLocation[1],
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
-                }}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: selectedLocation[0],
-                    longitude: selectedLocation[1],
-                  }}
-                  title="Location"
-                />
-              </MapView>
-            )}
+            <Text style={styles.fullText}>{selectedFullText}</Text>
             <TouchableOpacity
               style={styles.closeButton}
-              onPress={closeMapViewModal}
+              onPress={closeFullTextModal}
             >
               <Text style={styles.closeText}>Close</Text>
             </TouchableOpacity>
@@ -100,12 +100,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: "50%",
   },
-  value: {
-    fontSize: 16,
-  },
   link: {
     color: "blue",
     textDecorationLine: "underline",
+  },
+  value: {
+    fontSize: 16,
   },
   valueTruncated: {
     flex: 1,
@@ -128,9 +128,8 @@ const styles = StyleSheet.create({
     minWidth: 300,
     maxWidth: "80%",
   },
-  map: {
-    width: "100%",
-    height: 300,
+  fullText: {
+    fontSize: 16,
     marginBottom: 10,
   },
   closeButton: {
