@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import CustomerCard from "../../../../Component/CustomerCard";
 import avatar2 from "../../../../../assets/svg/avatar_2.svg";
 import { useRoute } from "@react-navigation/native";
@@ -31,7 +30,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: 10,
     color: "gray",
-    marginTop: 10,
+    marginTop: 5,
   },
   header: {
     flexDirection: "row",
@@ -63,14 +62,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#E0E0E0",
     alignSelf: "center",
   },
+  CustomerCard: {
+    display: "flex",
+    flexDirection: "column",
+    overflowX: "hidden",
+  },
 });
 
-const Index = () => {
+const Customers = () => {
   const navigation = useNavigation();
   const { user } = useSession();
   const route = useRoute();
-  const agentId = route.params?.agentId;
-
+  const agentId = user?.data?._id;
   const {
     data: customersData,
     isLoading: isLoadingCustomers,
@@ -149,21 +152,18 @@ const Index = () => {
         Array.isArray(customersData?.data?.data) && (
           <ScrollView
             vertical
-            contentContainerStyle={{
-              display: "flex",
-              flexDirection: "column",
-              overflowX: "hidden",
-            }}
+            contentContainerStyle={styles.CustomerCard}
             showsVerticalScrollIndicator={false}
           >
             {customersData?.data?.data.map((customer, index) => (
               <CustomerCard
                 key={index}
                 name={customer?.name}
-                designation="Customer"
+                designation="customer"
                 phoneNumber="1234567890"
                 address={customer?.clientLocation}
                 id={customer._id}
+                orderStatus={customer?.orderStatus}
               />
             ))}
           </ScrollView>
@@ -172,4 +172,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Customers;

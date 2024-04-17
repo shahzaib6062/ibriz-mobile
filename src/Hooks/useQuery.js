@@ -1,0 +1,65 @@
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useSession } from "../contexts/sessionContext";
+
+const api_url = "https://false-mitten-production.up.railway.app/api/v1";
+
+export const useClientsByAgent = () => {
+  const { user } = useSession();
+  return useQuery({
+    queryKey: ["clientsByAgent"],
+    queryFn: () => {
+      return axios.get(
+        `${api_url}/agents/${user?.data?._id}/clients?pageNumber=1`
+      );
+    },
+  });
+};
+
+export const useFieldAgentsBySalesAgent = () => {
+  const { user } = useSession();
+  return useQuery({
+    queryKey: ["fieldAgentsBySalesAgent"],
+    queryFn: () => {
+      return axios.get(`${api_url}/agents/${user?.data?._id}/fieldAgents`);
+    },
+  });
+};
+
+export const useClientsOfAgent = (agentId) => {
+  return useQuery({
+    queryKey: ["clientsOfAgent", agentId],
+    queryFn: () => {
+      return axios.get(`${api_url}/agents/${agentId}/clients?pageNumber=1`);
+    },
+  });
+};
+
+export const useClient = (clientId) => {
+  return useQuery({
+    queryKey: ["client", clientId],
+    queryFn: () => {
+      return axios.get(`${api_url}/clients/${clientId}`);
+    },
+  });
+};
+
+export const useClientsVisits = (clientId) => {
+  return useQuery({
+    queryKey: ["clientsVisits", clientId],
+    queryFn: () => {
+      return axios.get(`${api_url}/clients/${clientId}/visits?pageSize=20`);
+    },
+  });
+};
+
+export const UseAgentKpis = () => {
+  const { user } = useSession();
+  const type = user?.data?.type === "field" ? "fieldAgent" : "salesAgent";
+  return useQuery({
+    queryKey: ["agentKpis"],
+    queryFn: () => {
+      return axios.get(`${api_url}/kpis/${type}`);
+    },
+  });
+};
