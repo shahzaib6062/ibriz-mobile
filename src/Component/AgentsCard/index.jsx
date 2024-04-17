@@ -17,7 +17,7 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
     } else if (designation === "Customer") {
       router.navigate({
         pathname: "agent/profile",
-        params: { agentId: id },
+        params: { clientId: id },
       });
     }
   };

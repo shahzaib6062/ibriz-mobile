@@ -160,7 +160,7 @@ const Index = () => {
               <CustomerCard
                 key={index}
                 name={customer?.name}
-                designation="Field Agent"
+                designation="Customer"
                 phoneNumber="1234567890"
                 address={customer?.clientLocation}
                 id={customer._id}

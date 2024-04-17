@@ -1,13 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import CustomerCard from "../../../../Component/CustomerCard";
 import avatar2 from "../../../../../assets/svg/avatar_2.svg";
-import { useRoute } from "@react-navigation/native";
-import {
-  useClientsOfAgent,
-  useFieldAgentsBySalesAgent,
-} from "../../../../Hooks/useQuery";
+import { useFieldAgentsBySalesAgent } from "../../../../Hooks/useQuery";
 import { Image } from "expo-image";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../../contexts/sessionContext";
