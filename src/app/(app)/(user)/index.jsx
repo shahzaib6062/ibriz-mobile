@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import FilterKPI from "../../../Component/FilterKpi";
-import { AntDesign } from "@expo/vector-icons";
 import AgentsCard from "../../../Component/AgentsCard";
 import loadingLogo from "../../../../assets/IBRIZ_logo.svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
   },
 });
 export default function Index() {
-  const { user } = useSession();
+  const { user, handleLogout } = useSession();
   const [kpiData, setKpiData] = useState([]);
   const {
     data: clientsByAgent,
@@ -52,7 +51,7 @@ export default function Index() {
     isError: isErrorClients,
     error: errorClients,
     refetch: refetchClients,
-  } = useClientsByAgent();
+  } = useClientsByAgent({ forceFetch: true });
 
   const {
     data: fieldAgentsBySalesAgent,
@@ -60,7 +59,7 @@ export default function Index() {
     isError: isErrorFieldAgents,
     error: errorFieldAgents,
     refetch: refetchFieldAgents,
-  } = useFieldAgentsBySalesAgent();
+  } = useFieldAgentsBySalesAgent({ forceFetch: true });
 
   const {
     data: agentKpis,
@@ -68,7 +67,7 @@ export default function Index() {
     isError: isErrorAgentKpis,
     isSuccess: isSuccessAgentKpis,
     refetch: refetchAgentKpis,
-  } = UseAgentKpis();
+  } = UseAgentKpis({ forceFetch: true });
   useEffect(() => {
     if (user?.data?.type === "field" && agentKpis?.data) {
       setKpiData([
@@ -134,6 +133,11 @@ export default function Index() {
             loading...
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -145,6 +149,11 @@ export default function Index() {
         <TouchableOpacity onPress={refetchFunc}>
           <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
             Error fetching data
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
           </Text>
         </TouchableOpacity>
       </View>
@@ -221,23 +230,20 @@ export default function Index() {
             </View>
           )}
 
-        {fieldAgentsBySalesAgent && fieldAgentsBySalesAgent.data?.count > 0 && (
-          <View style={styles.container}>
-            <Text style={styles.title}>Field Agents</Text>
-            {/* <AntDesign
-              name="arrowright"
-              size={24}
-              color="black"
-              style={{ marginRight: 10, marginTop: 15 }}
-            /> */}
-          </View>
-        )}
+        {user?.data?.type === "sales" &&
+          fieldAgentsBySalesAgent &&
+          fieldAgentsBySalesAgent.data?.count > 0 && (
+            <View style={styles.container}>
+              <Text style={styles.title}>Field Agents</Text>
+            </View>
+          )}
         <ScrollView
           horizontal
           contentContainerStyle={styles.AgentsCardRow}
           showsHorizontalScrollIndicator={false}
         >
-          {fieldAgentsBySalesAgent &&
+          {user?.data?.type === "sales" &&
+            fieldAgentsBySalesAgent &&
             fieldAgentsBySalesAgent.data &&
             Array.isArray(fieldAgentsBySalesAgent.data.data) &&
             fieldAgentsBySalesAgent.data.data.map((agent, index) => (
@@ -255,12 +261,6 @@ export default function Index() {
           <View>
             <View style={styles.container}>
               <Text style={styles.title}>Customers</Text>
-              {/* <AntDesign
-                name="arrowright"
-                size={24}
-                color="black"
-                style={{ marginRight: 10, marginTop: 15 }}
-              /> */}
             </View>
             {clientsByAgent &&
               clientsByAgent.data &&

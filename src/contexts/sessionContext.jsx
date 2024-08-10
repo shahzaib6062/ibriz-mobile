@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext } from "react";
 import { useStorageState } from "../Hooks/useStorageState";
+import { useMutation, queryCache } from "@tanstack/react-query";
 
 const SessionContext = createContext();
 
@@ -26,6 +27,14 @@ export function SessionProvider(props) {
   }, []);
 
   const user = session ? JSON.parse(session) : null;
+  const logoutMutation = useMutation(() => {
+    removeUser();
+    queryCache.clear();
+  });
+
+  const handleLogout = useCallback(() => {
+    logoutMutation.mutate();
+  }, [logoutMutation]);
 
   return (
     <SessionContext.Provider
@@ -34,6 +43,7 @@ export function SessionProvider(props) {
         saveUser,
         removeUser,
         isLoading,
+        handleLogout, // Provide handleLogout function to consumers
       }}
     >
       {props.children}

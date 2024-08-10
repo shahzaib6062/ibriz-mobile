@@ -13,7 +13,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Image } from "expo-image";
 import backIcon from "../../../../../assets/svg/backArrow.svg";
 import { EvilIcons } from "@expo/vector-icons";
+import { useSession } from "../../../../contexts/sessionContext";
 const Profile = () => {
+  const { handleLogout } = useSession();
   const navigation = useNavigation();
   const route = useRoute();
   const clientId = route.params?.clientId;
@@ -52,25 +54,37 @@ const Profile = () => {
             Error fetch again
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   if (isLoadingVisits) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#0432FF",
-          justifyContent: "center",
-          alignItems: "center",
-          objectFit: "contain",
-        }}
-      >
-        <Image source={loadingLogo} width={"50%"} height={100} />
-        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
-          Loading...
-        </Text>
+      <View>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#0432FF",
+            justifyContent: "center",
+            alignItems: "center",
+            objectFit: "contain",
+          }}
+        >
+          <Image source={loadingLogo} width={"50%"} height={100} />
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Loading...
+          </Text>
+        </View>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

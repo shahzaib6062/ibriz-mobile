@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 
 const Customers = () => {
   const navigation = useNavigation();
-  const { user } = useSession();
+  const { user, handleLogout } = useSession();
   const route = useRoute();
   const agentId = user?.data?._id;
   const {
@@ -83,19 +83,26 @@ const Customers = () => {
 
   if (isLoadingCustomers) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#0432FF",
-          justifyContent: "center",
-          alignItems: "center",
-          objectFit: "contain",
-        }}
-      >
-        <Image source={loadingLogo} width={"50%"} height={100} />
-        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
-          Loading...
-        </Text>
+      <View>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#0432FF",
+            justifyContent: "center",
+            alignItems: "center",
+            objectFit: "contain",
+          }}
+        >
+          <Image source={loadingLogo} width={"50%"} height={100} />
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Loading...
+          </Text>
+        </View>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -114,6 +121,11 @@ const Customers = () => {
         <TouchableOpacity onPress={refetch}>
           <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
             Error fetch again
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
           </Text>
         </TouchableOpacity>
       </View>
