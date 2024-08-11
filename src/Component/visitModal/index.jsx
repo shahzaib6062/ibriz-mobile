@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View, Switch } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Location from "expo-location";
 import { useSession } from "../../contexts/sessionContext";
@@ -16,13 +16,14 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
   const [isMapVisible, setMapVisible] = useState(false);
   const [mapRegion, setMapRegion] = useState({});
   const [remark, setRemark] = useState("");
+  const [pumpStatus, setPumpStatus] = useState(false); // New state for pump status
 
   useEffect(() => {
     setMapVisible(false);
     setLocation(false);
     setSelectedDate(null);
-    setSelectedDate(false);
     setRemark("");
+    setPumpStatus(false); // Reset pump status when the modal is opened
   }, []);
 
   useEffect(() => {
@@ -43,6 +44,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     error: addVisitError,
     isSuccess: addVisitSuccess,
   } = useAddVisit();
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -55,6 +57,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setSelectedDate(date);
     hideDatePicker();
   };
+
   useEffect(() => {
     if (location) {
       setMapRegion({
@@ -78,6 +81,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setLocationSuccess(true);
     setMapVisible(true);
   };
+
   const checkSubmitDisabled = () => {
     if (!selectedDate) {
       return true;
@@ -90,6 +94,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     }
     return false;
   };
+
   const handleAddVisitData = () => {
     if (!selectedDate) {
       return;
@@ -106,6 +111,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
       recordedBy: user?.data?._id,
       visitLocation: [location.longitude, location.latitude],
       remarks: remark,
+      pumpStatus: pumpStatus ? "On" : "Off", // Include pump status in the visit data
     };
     setMapVisible(false);
     addVisit(visitData);
@@ -113,6 +119,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setLocation(null);
     setLocationSuccess(false);
     setRemark("");
+    setPumpStatus(false); // Reset pump status after submitting
     onClose();
   };
 
@@ -123,6 +130,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     setLocationSuccess(false);
     setMapVisible(false);
     setMapRegion({});
+    setPumpStatus(false); // Reset pump status when closing the modal
     onClose();
   };
 
@@ -171,15 +179,28 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
             <TextInput
               style={styles.remarkInput}
               multiline={true}
-              numberOfLines={4}
+              numberOfLines={2}
               onChangeText={setRemark}
               value={remark}
-              placeholder="Enter any relevant remarks for this visit."
+              placeholder="Enter relevant remarks for this visit."
             />
           </View>
+
+          {/* Pump Status Toggle */}
+          <View style={styles.pumpStatusContainer}>
+            <Text style={styles.pumpStatusLabel}>Pump Status:</Text>
+            <Switch
+              value={pumpStatus}
+              onValueChange={(value) => setPumpStatus(value)}
+            />
+            <Text style={styles.pumpStatusText}>
+              {pumpStatus ? "On" : "Off"}
+            </Text>
+          </View>
+<View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
           <TouchableOpacity
             style={[
-              styles.button,
+              styles.addButton,
               checkSubmitDisabled() && styles.disabledButton,
             ]}
             onPress={handleAddVisitData}
@@ -190,6 +211,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
           <TouchableOpacity style={styles.closeButton} onPress={closeLocation}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
+        </View>
         </View>
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
@@ -221,6 +243,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
+  addButton: {
+    backgroundColor: "#3498db",
+    paddingVertical: 10,
+    paddingHorizontal: 0,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: "40%",
+    alignItems: "center",
+    marginRight: 10,
+  },
   button: {
     backgroundColor: "#3498db",
     paddingVertical: 10,
@@ -250,6 +282,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
+    width: "40%",
+    alignItems: "center",
+    marginLeft: 10,
   },
   closeButtonText: {
     color: "#fff",
@@ -273,8 +308,23 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 10,
     borderRadius: 5,
-    fontSize: 16, // Adjust font size for consistency
-    minHeight: 80, // Set minimum height for multiline input
+    fontSize: 16,
+    minHeight: 80,
+  },
+  pumpStatusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  pumpStatusLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 10,
+  },
+  pumpStatusText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 10,
   },
 });
 

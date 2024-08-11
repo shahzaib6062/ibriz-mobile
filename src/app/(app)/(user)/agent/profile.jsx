@@ -28,6 +28,7 @@ const Profile = () => {
     error: visitError,
     refetch: visitRefetch,
   } = useClientsVisits(clientId);
+    console.log("🚀 ~ Profile ~ visitData:", visitData)
 
   const handleAddVisit = () => {
     setModalVisible(true);
@@ -106,7 +107,7 @@ const Profile = () => {
       <CustomerProfileCard
         name={clientData?.data?.data?.name}
         type="Customer"
-        phone="+123 456 7890"
+        phone={clientData?.data?.data?.phone}
         email={clientData?.data?.data?.email}
         address={clientData?.data?.data?.clientLocation}
       />
@@ -128,15 +129,16 @@ const Profile = () => {
           visitData.data.data.map((visit, index) => (
             <HarvestDataCard
               key={index}
+              index={index}
               data={[
                 {
-                  label: "Harvest Time",
+                  label: "Visit Time",
                   value: moment(visit?.harvestDateTime)
                     .tz(moment.tz.guess())
                     .format("HH:mm A"),
                 },
                 {
-                  label: "Harvest Date",
+                  label: "Visit Date",
                   value: moment(visit?.harvestDateTime).format("YYYY-MM-DD"),
                 },
                 { label: "Location", value: visit?.visitLocation },
@@ -147,6 +149,10 @@ const Profile = () => {
                 {
                   label: "Remarks",
                   value: visit.remarks,
+                },
+                {
+                  label: "Verified Status",
+                  value: visit?.pumpStatusByAgent === 1 ? "ON" : "OFF",
                 },
               ]}
             />

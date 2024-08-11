@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "../contexts/sessionContext";
 
-const api_url = "https://false-mitten-production.up.railway.app/api/v1";
+const api_url = "https://ibriz-backend.up.railway.app/api/v1";
 
 export const useClientsByAgent = () => {
   const { user } = useSession();
@@ -11,7 +11,7 @@ export const useClientsByAgent = () => {
     queryFn: () => {
       return axios.get(
         `${api_url}/agents/${user?.data?._id}/clients?pageNumber=1`
-      );
+      );  
     },
   });
 };
@@ -63,3 +63,24 @@ export const UseAgentKpis = () => {
     },
   });
 };
+
+export const useClients = () => {
+  const { user } = useSession();
+  const token = user?.token;
+  const queryClient = useQueryClient();
+  const queryKey = ["clients"];
+  return useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data } = await axios.get(`${api_url}/clients?pageNumber=1`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKey);
+    },
+  });
+};
+
+

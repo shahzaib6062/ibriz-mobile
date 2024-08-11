@@ -172,7 +172,7 @@ const Customers = () => {
                 key={index}
                 name={customer?.name}
                 designation="Customer"
-                phoneNumber="1234567890"
+                phoneNumber={customer?.phone}
                 address={customer?.clientLocation}
                 id={customer._id}
                 orderStatus={customer?.orderStatus}

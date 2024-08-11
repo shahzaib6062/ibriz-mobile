@@ -16,6 +16,7 @@ const CustomerCard = ({
   address,
   id,
   orderStatus,
+
 }) => {
   const router = useRouter();
 

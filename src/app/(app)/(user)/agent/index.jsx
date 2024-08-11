@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import CustomerCard from "../../../../Component/CustomerCard";
 import avatar2 from "../../../../../assets/svg/avatar_2.svg";
 import { useRoute } from "@react-navigation/native";
@@ -8,9 +7,12 @@ import { useClientsOfAgent } from "../../../../Hooks/useQuery";
 import { Image } from "expo-image";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../../contexts/sessionContext";
-import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
-import { useNavigation } from "expo-router";
+import loadingLogo from "../../../../../assets/IBRIZ_logo.svg";
+import { useNavigation, useRouter } from "expo-router";
 import backIcon from "../../../../../assets/svg/backArrow.svg";
+import { useAgents, usePumpsHistory } from "../../../../Hooks/mutations";
+import moment from "moment";
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -66,17 +68,25 @@ const styles = StyleSheet.create({
 });
 
 const Index = () => {
+  const router = useRouter();
   const navigation = useNavigation();
   const { user, handleLogout } = useSession();
   const route = useRoute();
   const agentId = route.params?.agentId;
 
   const {
-    data: customersData,
     isLoading: isLoadingCustomers,
-    isError: isErrorCustomers,
-    refetch,
+    error: isErrorCustomers,
+    data: customersData,
+    mutate: mutateCustomers,
   } = useClientsOfAgent(agentId);
+
+  const handleCardPress = () => {
+    router.navigate({
+      pathname: "agent/customerAction",
+    });
+   
+  };
 
   if (isLoadingCustomers) {
     return (
@@ -103,6 +113,7 @@ const Index = () => {
       </View>
     );
   }
+
   if (isErrorCustomers) {
     return (
       <View
@@ -146,15 +157,20 @@ const Index = () => {
           {user?.data?.type} {user?.data?.role}
         </Text>
       </View>
-      <View style={styles.header}>
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Assigned Customer</Text>
+      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <View style={styles.header}>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerText}>Assigned Customer</Text>
+          </View>
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>
+              {customersData?.data?.count || "0"}
+            </Text>
+          </View>
         </View>
-        <View style={styles.pill}>
-          <Text style={styles.pillText}>
-            {customersData?.data?.count || "0"}
-          </Text>
-        </View>
+        <TouchableOpacity onPress={() => handleCardPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold" }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF", padding: "5px 15px" }}>Add Customer</Text>
+        </TouchableOpacity>
       </View>
       {customersData &&
         customersData.data &&
@@ -173,7 +189,7 @@ const Index = () => {
                 key={index}
                 name={customer?.name}
                 designation="Customer"
-                phoneNumber="1234567890"
+                phoneNumber={customer?.phone}
                 address={customer?.clientLocation}
                 id={customer._id}
               />

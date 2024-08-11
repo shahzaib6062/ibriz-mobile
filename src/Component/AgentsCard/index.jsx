@@ -7,7 +7,7 @@ import avatar2 from "../../../assets/svg/avatar_2.svg";
 import groupAvatar from "../../../assets/svg/group_avatar.svg";
 import { router } from "expo-router";
 
-const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
+const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus, email, visitCount = 0 }) => {
   const handleCardPress = () => {
     if (designation === "Field Agent") {
       router.navigate({
@@ -32,7 +32,7 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
           />
           <View>
             <Text style={styles.name}>{name}</Text>
-            <Text style={styles.designation}>{designation}</Text>
+            <Text style={styles.designation}>{email}</Text>
           </View>
         </View>
       </View>
@@ -48,6 +48,9 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
           <Image source={groupAvatar} style={styles.groupAvatar} />
         </View>
       </View>
+      <View style={{...styles.customerCountContainer, position: "absolute", top: 15, right: 8}}>
+        <Text>{visitCount}</Text>
+        </View>
     </TouchableOpacity>
   );
 };

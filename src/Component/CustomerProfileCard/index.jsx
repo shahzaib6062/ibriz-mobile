@@ -1,35 +1,24 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
-import avatar2 from "../../../assets/svg/avatar_2.svg";
-import mailLogo from "../../../assets/svg/mail_logo.svg";
 import phoneLogo from "../../../assets/svg/call_logo.svg";
 import locationLogo from "../../../assets/svg/location_logo.svg";
 const CustomerProfileCard = ({ avatar, name, type, phone, email, address }) => {
   return (
     <View style={styles.card}>
-      <View style={styles.avatarContainer}>
-        <View style={styles.avatar}>
-          <Image source={avatar2} style={styles.avatar} />
-        </View>
-      </View>
       <View style={styles.row}>
         <Text style={styles.name}>{name}</Text>
-        <Text style={styles.type}>{type}</Text>
       </View>
-      <View style={styles.row}></View>
+      <View>
       <View style={styles.contactRow}>
         <Image source={phoneLogo} style={{ width: 20, height: 20 }} />
         <Text style={styles.contactInfo}>{phone}</Text>
       </View>
       <View style={styles.contactRow}>
-        <Image source={mailLogo} style={{ width: 20, height: 20 }} />
-        <Text style={styles.contactInfo}>{email}</Text>
-      </View>
-      <View style={styles.contactRow}>
         <Image source={locationLogo} style={{ width: 20, height: 20 }} />
         <Text style={styles.contactInfo}>{address}</Text>
       </View>
+    </View>
     </View>
   );
 };
@@ -41,6 +30,9 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 20,
     marginVertical: 10,
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "row",
   },
   avatarContainer: {
     paddingTop: 20,
@@ -54,8 +46,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   row: {
-    alignItems: "center",
-    marginBottom: 10,
+    marginTop: 10
   },
   name: {
     fontSize: 20,

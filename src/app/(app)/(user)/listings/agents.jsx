@@ -171,7 +171,7 @@ const Agents = () => {
                 key={index}
                 name={customer?.name}
                 designation="Field Agent"
-                phoneNumber="1234567890"
+                phoneNumber={customer?.phone}
                 address={customer?.clientLocation}
                 id={customer._id}
                 orderStatus={customer?.orderStatus}

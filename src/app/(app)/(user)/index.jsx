@@ -13,6 +13,8 @@ import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../contexts/sessionContext";
 import { EvilIcons } from "@expo/vector-icons";
+import { useVisitKpis } from "../../../Hooks/mutations";
+import Picker from "../../../Component/Picker";
 
 const styles = StyleSheet.create({
   title: {
@@ -45,6 +47,7 @@ const styles = StyleSheet.create({
 export default function Index() {
   const { user, handleLogout } = useSession();
   const [kpiData, setKpiData] = useState([]);
+  
   const {
     data: clientsByAgent,
     isLoading: isLoadingClients,
@@ -68,6 +71,25 @@ export default function Index() {
     isSuccess: isSuccessAgentKpis,
     refetch: refetchAgentKpis,
   } = UseAgentKpis({ forceFetch: true });
+
+  const {
+    data: visitKpis,
+    isLoading: isLoadingVisitKpis,
+    isError: isErrorVisitKpis,
+    isSuccess: isSuccessVisitKpis,
+    refetch: refetchVisitKpis,
+    mutate: mutateVisitKpis,
+  } = useVisitKpis({ forceFetch: true });
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const currentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const formattedStartDate = currentMonth.toISOString().split("T")[0] + "T00:00:00.000";
+    const formattedEndDate = currentDate.toISOString().split("T")[0] + "T23:59:59.999";
+    const payload = { startDate: formattedStartDate, endDate: formattedEndDate, agentId: user?.data?._id };
+    mutateVisitKpis(payload);
+  }, []);
+
   useEffect(() => {
     if (user?.data?.type === "field" && agentKpis?.data) {
       setKpiData([
@@ -92,6 +114,13 @@ export default function Index() {
           change: "",
           icon: "clockcircleo",
         },
+        {
+          value: visitKpis?.data?.totalVisits || 0,
+          unit: "",
+          label: "Total visits",
+          change: "",
+          icon: "checkcircleo",
+        }
       ]);
     } else if (user?.data?.type === "sales" && agentKpis?.data) {
       setKpiData([
@@ -116,9 +145,16 @@ export default function Index() {
           change: "",
           icon: "clockcircleo",
         },
+        {
+          value: visitKpis?.data?.totalVisits || 0,
+          unit: "",
+          label: "Total visits",
+          change: "",
+          icon: "checkcircleo",
+        }
       ]);
     }
-  }, [agentKpis]);
+  }, [agentKpis, visitKpis]);
 
   if (isLoadingClients || isLoadingFieldAgents) {
     return (
@@ -164,12 +200,22 @@ export default function Index() {
     refetchClients();
     refetchFieldAgents();
     refetchAgentKpis();
+
+  };
+
+  const handleFilterChange = (value) => {
+    console.log('Selected filter:', value);
+    mutateVisitKpis({ startDate: value.startDate, endDate: value.endDate, agentId: user?.data?._id });
   };
 
   return (
     <ScrollView>
+      
       <View style={styles.appLayout}>
         <View style={styles.container}>
+        <View style={{ position: 'absolute', right: 0, top: 0, marginTop: 5, marginRight: 10 }} >
+      <Picker onFilterChange={handleFilterChange} />
+      </View>
           <View
             style={{
               display: "flex",
@@ -178,7 +224,7 @@ export default function Index() {
             }}
           >
             <View>
-              <Text style={styles.title}>Overview</Text>
+              <Text style={styles.title}>Overview</Text>  
             </View>
             <View>
               <TouchableOpacity
@@ -187,6 +233,7 @@ export default function Index() {
                   flexDirection: "row",
                   alignItems: "end",
                   marginTop: 20,
+                  justifyContent: 'flex-end',
                 }}
                 onPress={refetchFunc}
               >
@@ -196,6 +243,7 @@ export default function Index() {
                     fontWeight: "bold",
                     color: "#0432FF",
                     fontSize: 12,
+                    marginTop: 2,
                   }}
                 >
                   Refresh
@@ -204,12 +252,11 @@ export default function Index() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-        {kpiData &&
+        </View>  
+    {kpiData &&
           kpiData.map((item, index) => (
             <FilterKPI key={index} kpiData={item} />
           ))}
-
         {fieldAgentsBySalesAgent &&
           fieldAgentsBySalesAgent.data?.count === 0 &&
           clientsByAgent &&
@@ -252,6 +299,8 @@ export default function Index() {
                 id={agent?._id}
                 name={agent?.name}
                 designation="Field Agent"
+                visitCount={ visitKpis?.data?.visitCountByFieldAgent[agent?._id] || 0}
+                email={agent?.email}
                 totalCustomers={100}
                 orderStatus={agent?.orderStatus}
               />
@@ -275,9 +324,11 @@ export default function Index() {
                       key={index}
                       name={client?.name}
                       designation="Customer"
+                      email={client?.email}
                       totalCustomers={100}
                       id={client?._id}
                       orderStatus={client?.orderStatus}
+                      visitCount={ visitKpis?.data?.visitCountByFieldAgent[client?._id] || 0}
                     />
                   ))}
                 </ScrollView>
