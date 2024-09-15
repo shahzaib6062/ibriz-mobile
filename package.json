@@ -44,7 +44,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "expo-dev-client": "~3.3.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

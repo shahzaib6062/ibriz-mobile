@@ -31,3 +31,5 @@ export default function Layout() {
     </QueryClientProvider>
   );
 }
+
+// eas build --platform android --profile release
