@@ -39,28 +39,38 @@ const Picker = ({ onFilterChange }) => {
   return (
       <ModalSelector
         data={filterOptions}
-        initValue="Choose month"
+        initValue={selectedValue ? selectedValue.slice(0, 3) : new Date().toLocaleString('default', { month: 'short' })}
         onChange={(option) => {
           setSelectedValue(option.label);
           onFilterChange({startDate: option.startDate,  endDate: option.endDate});
         }} 
         
         style={styles.selector}
-        selectTextStyle={styles.selectText}
+        // selectTextStyle={styles.selectText}
         optionTextStyle={styles.optionText}
         overlayStyle={styles.overlay}
         sectionStyle={styles.section}
         optionContainerStyle={styles.optionContainer}
         animationType="none" 
         backdropPressToClose={true} 
+        initValueTextStyle={styles.initValueText} // Add this line
+        selectTextStyle={styles.selectText} // Add this line
       />
   );
 };
 
 const styles = StyleSheet.create({
-
+  initValueText: {  
+    color: 'black',
+    fontWeight: '400',
+  },
+  selectText: {   
+    color: 'black',
+    fontWeight: '400',
+    border: 'none',
+  },
   selector: {
-    width: 130,
+    width: 100,
     borderWidth: 0,
     borderColor: 'transparent',
     borderRadius: 0,

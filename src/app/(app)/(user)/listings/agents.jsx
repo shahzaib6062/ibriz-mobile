@@ -7,7 +7,7 @@ import { Image } from "expo-image";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../../contexts/sessionContext";
 import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import backIcon from "../../../../../assets/svg/backArrow.svg";
 const styles = StyleSheet.create({
   container: {
@@ -44,15 +44,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   pill: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#0432FF",
     paddingHorizontal: 12,
-    paddingTop: 3,
     borderRadius: 15,
     marginLeft: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   pillText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
   },
   avatar: {
     width: 60,
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
 });
 
 const Agents = () => {
+  const router = useRouter();
   const navigation = useNavigation();
   const { user, handleLogout } = useSession();
   const {
@@ -79,6 +82,12 @@ const Agents = () => {
     error: customersError,
     refetch,
   } = useFieldAgentsBySalesAgent();
+
+  const handleCardPress = () => {
+    router.navigate({
+      pathname: "agent/agentAction",
+    });
+  };
 
   if (isLoadingCustomers) {
     return (
@@ -157,6 +166,9 @@ const Agents = () => {
             {customersData?.data?.count || "0"}
           </Text>
         </View>
+        <TouchableOpacity onPress={() => handleCardPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold", marginLeft: 10, paddingHorizontal: 10, paddingVertical: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF" }}>Add Agent</Text>
+        </TouchableOpacity>
       </View>
       {customersData &&
         customersData.data &&

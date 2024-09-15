@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View, Switch } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View, Switch, Alert } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Location from "expo-location";
 import { useSession } from "../../contexts/sessionContext";
@@ -42,9 +42,14 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
     mutate: addVisit,
     isLoading: addVisitLoading,
     error: addVisitError,
-    isSuccess: addVisitSuccess,
+    isSuccess: addVisitSuccess,  
   } = useAddVisit();
 
+useEffect(() => {
+  if (addVisitError) {
+    Alert.alert("Error", addVisitError?.response?.data?.message);
+  }
+}, [addVisitError])
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -111,7 +116,7 @@ const AddVisitModal = ({ isVisible, onClose, clientId }) => {
       recordedBy: user?.data?._id,
       visitLocation: [location.longitude, location.latitude],
       remarks: remark,
-      pumpStatus: pumpStatus ? "On" : "Off", // Include pump status in the visit data
+      pumpStatus: pumpStatus ? "on" : "off", 
     };
     setMapVisible(false);
     addVisit(visitData);

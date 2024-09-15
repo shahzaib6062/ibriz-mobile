@@ -39,7 +39,16 @@ export const useClient = (clientId) => {
   return useQuery({
     queryKey: ["client", clientId],
     queryFn: () => {
-      return axios.get(`${api_url}/clients/${clientId}`);
+      return axios.get(`${api_url}/clients/${clientId}?fetchAssociations=true`);
+    },
+  });
+};
+
+export const useAgent = (agentId) => {
+  return useQuery({
+    queryKey: ["agent", agentId],
+    queryFn: () => {
+      return axios.get(`${api_url}/agents/${agentId}`);
     },
   });
 };

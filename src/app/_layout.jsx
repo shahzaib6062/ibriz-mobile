@@ -3,6 +3,7 @@ import { SessionProvider } from "../contexts/sessionContext";
 import { SafeAreaView, View } from "react-native";
 import { Stack } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "expo-dev-client";
 
 const queryClient = new QueryClient({
   defaultOptions: {

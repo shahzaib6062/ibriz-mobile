@@ -7,7 +7,7 @@ import { useRoute } from "@react-navigation/native";
 import { useClient, useClientsVisits } from "../../../../Hooks/useQuery";
 import moment from "moment";
 import "moment-timezone";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Image } from "expo-image";
@@ -15,6 +15,8 @@ import backIcon from "../../../../../assets/svg/backArrow.svg";
 import { EvilIcons } from "@expo/vector-icons";
 import { useSession } from "../../../../contexts/sessionContext";
 const Profile = () => {
+  const {user} = useSession();
+  const router = useRouter();
   const { handleLogout } = useSession();
   const navigation = useNavigation();
   const route = useRoute();
@@ -28,7 +30,7 @@ const Profile = () => {
     error: visitError,
     refetch: visitRefetch,
   } = useClientsVisits(clientId);
-    console.log("🚀 ~ Profile ~ visitData:", visitData)
+    console.log("🚀 ~ Profile ~ visitData:", visitData?.data?.data)
 
   const handleAddVisit = () => {
     setModalVisible(true);
@@ -36,6 +38,13 @@ const Profile = () => {
 
   const closeModal = () => {
     setModalVisible(false);
+  };
+
+  const handleCardPress = () => {
+    router.navigate({
+      pathname: "agent/customerAction",
+      params: { clientId: clientId },
+    });
   };
 
   if (isErrorVisits) {
@@ -92,6 +101,7 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.titleRow}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <View style={{ display: "flex", flexDirection: "row", padding: 10 }}>
           <Image
@@ -103,6 +113,11 @@ const Profile = () => {
           <Text style={{}}>Back</Text>
         </View>
       </TouchableOpacity>
+     {user?.data?.type === "sales" && <TouchableOpacity onPress={() => handleCardPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold", marginRight: 10, paddingHorizontal: 10, paddingVertical: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF" }}>Edit Customer</Text>
+        </TouchableOpacity>}
+      </View>
+
 
       <CustomerProfileCard
         name={clientData?.data?.data?.name}
@@ -154,6 +169,10 @@ const Profile = () => {
                   label: "Verified Status",
                   value: visit?.pumpStatusByAgent === 1 ? "ON" : "OFF",
                 },
+                {
+                  label: "Distance from Pump",
+                  value:visit?.distanceFromPump ?  (visit?.distanceFromPump  / 1609.34).toFixed(2) + " miles" : "N/A",
+                }
               ]}
             />
           ))}
@@ -174,6 +193,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
+  },
+  titleRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,  
   },
   header: {
     flexDirection: "row",

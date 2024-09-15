@@ -10,8 +10,6 @@ import { useSession } from "../../../../contexts/sessionContext";
 import loadingLogo from "../../../../../assets/IBRIZ_logo.svg";
 import { useNavigation, useRouter } from "expo-router";
 import backIcon from "../../../../../assets/svg/backArrow.svg";
-import { useAgents, usePumpsHistory } from "../../../../Hooks/mutations";
-import moment from "moment";
 
 const styles = StyleSheet.create({
   container: {
@@ -48,15 +46,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   pill: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#0432FF",
     paddingHorizontal: 12,
-    paddingTop: 3,
     borderRadius: 15,
     marginLeft: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 2,
   },
   pillText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
   },
   avatar: {
     width: 60,
@@ -81,12 +82,17 @@ const Index = () => {
     mutate: mutateCustomers,
   } = useClientsOfAgent(agentId);
 
-  const handleCardPress = () => {
+  const handleAddCustomerPress = () => {
     router.navigate({
       pathname: "agent/customerAction",
     });
-   
   };
+
+  const handleAddFieldAgentPress = () => {
+    router.navigate({
+      pathname: "agent/agentAction",
+    });
+  };  
 
   if (isLoadingCustomers) {
     return (
@@ -148,7 +154,7 @@ const Index = () => {
             source={backIcon}
             width={20}
             height={20}
-            style={{ marginTop: 5 }}
+            // style={{ marginTop: 5 }}
           />
         </TouchableOpacity>
         <Image source={avatar2} style={styles.avatar} />
@@ -157,7 +163,15 @@ const Index = () => {
           {user?.data?.type} {user?.data?.role}
         </Text>
       </View>
-      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <View style={{ display: "flex", flexDirection: "row", marginBottom: 20 }}>
+      <TouchableOpacity onPress={() => handleAddFieldAgentPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold", marginLeft: 10, paddingHorizontal: 10, paddingVertical: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF" }}>Add Field Agent</Text>
+        </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleAddCustomerPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold", marginLeft: 10, paddingHorizontal: 10, paddingVertical: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF" }}>Add Customer</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ display: "flex", flexDirection: "row" }}>
         <View style={styles.header}>
           <View style={styles.headerTextContainer}>
             <Text style={styles.headerText}>Assigned Customer</Text>
@@ -168,9 +182,7 @@ const Index = () => {
             </Text>
           </View>
         </View>
-        <TouchableOpacity onPress={() => handleCardPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold" }}>
-          <Text style={{ fontWeight: "bold", color: "#FFF", padding: "5px 15px" }}>Add Customer</Text>
-        </TouchableOpacity>
+      
       </View>
       {customersData &&
         customersData.data &&

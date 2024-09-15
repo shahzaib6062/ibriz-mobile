@@ -80,6 +80,9 @@ export default function Index() {
     refetch: refetchVisitKpis,
     mutate: mutateVisitKpis,
   } = useVisitKpis({ forceFetch: true });
+    console.log("🚀 ~ Index ~ visitKpis:", visitKpis?.data)
+
+  
 
   useEffect(() => {
     const currentDate = new Date();
@@ -204,7 +207,6 @@ export default function Index() {
   };
 
   const handleFilterChange = (value) => {
-    console.log('Selected filter:', value);
     mutateVisitKpis({ startDate: value.startDate, endDate: value.endDate, agentId: user?.data?._id });
   };
 
@@ -248,7 +250,7 @@ export default function Index() {
                 >
                   Refresh
                 </Text>
-                <EvilIcons name="refresh" size={24} color="black" />
+                <EvilIcons name="refresh" size={24} color="black" style={{ marginBottom: 10 }} />
               </TouchableOpacity>
             </View>
           </View>
@@ -328,7 +330,7 @@ export default function Index() {
                       totalCustomers={100}
                       id={client?._id}
                       orderStatus={client?.orderStatus}
-                      visitCount={ visitKpis?.data?.visitCountByFieldAgent[client?._id] || 0}
+                      visitCount={ visitKpis?.data?.visitCountByClients[client?._id] || 0}
                     />
                   ))}
                 </ScrollView>

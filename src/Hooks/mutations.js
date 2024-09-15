@@ -92,6 +92,7 @@ export const useVisitKpis = () => {
   const token = user?.token;
   return useMutation({
     mutationFn: async (payload) => {
+      console.log("🚀 ~ mutationFn: ~ payload:", payload)
       try {
         const response = await axios.get(`${api_url}/kpis/visits?startDate=${payload?.startDate}&endDate=${payload?.endDate}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -140,3 +141,64 @@ export const useVisitsClients = () => {
     },
   });
 }
+
+
+export const useAddAgent = () => {
+  const { user } = useSession();
+  const token = user?.token;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (agent) => {
+      const { data } = await axios.post(`${api_url}/agents`, agent, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("agents");
+    },
+  });
+};
+
+
+export const useEditAgent = () => {
+  const { user } = useSession();
+  const token = user?.token;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (updatedAgent) => {
+      const { data } = await axios.patch(
+        `${api_url}/agents/${updatedAgent.id}`,
+        updatedAgent,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("agents");
+    },
+  });
+};
+
+export const useUpdateClient = () => {
+  const { user } = useSession();
+  const token = user?.token;
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (updatedClient) => {
+      const { data } = await axios.patch(
+        `${api_url}/clients/${updatedClient.id}`,
+        updatedClient,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries("clients");
+    },
+  });
+};

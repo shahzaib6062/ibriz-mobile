@@ -8,8 +8,8 @@ import { Image } from "expo-image";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../../contexts/sessionContext";
 import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
-import { useNavigation } from "expo-router";
 import backIcon from "../../../../../assets/svg/backArrow.svg";
+import { useNavigation, useRouter } from "expo-router";
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -45,15 +45,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   pill: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#0432FF",
     paddingHorizontal: 12,
-    paddingTop: 3,
     borderRadius: 15,
     marginLeft: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   pillText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
   },
   avatar: {
     width: 60,
@@ -69,7 +71,10 @@ const styles = StyleSheet.create({
   },
 });
 
+
+
 const Customers = () => {
+  const router = useRouter();
   const navigation = useNavigation();
   const { user, handleLogout } = useSession();
   const route = useRoute();
@@ -80,6 +85,13 @@ const Customers = () => {
     isError: isErrorCustomers,
     refetch,
   } = useClientsOfAgent(agentId);
+
+
+  const handleCardPress = () => {
+    router.navigate({
+      pathname: "agent/customerAction",
+    });
+  };
 
   if (isLoadingCustomers) {
     return (
@@ -153,11 +165,15 @@ const Customers = () => {
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>Assigned Customer</Text>
         </View>
+
         <View style={styles.pill}>
           <Text style={styles.pillText}>
             {customersData?.data?.count || "0"}
           </Text>
         </View>
+    {user?.data?.type === "sales" &&    <TouchableOpacity onPress={() => handleCardPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold", marginLeft: 10, paddingHorizontal: 10, paddingVertical: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF" }}>Add Customer</Text>
+        </TouchableOpacity>}
       </View>
       {customersData &&
         customersData.data &&

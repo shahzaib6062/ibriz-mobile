@@ -36,6 +36,7 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus, email,
           </View>
         </View>
       </View>
+        <View style={{display: "flex", flexDirection: "row", alignItems: "center"}} >
       <View style={styles.row}>
         {orderStatus && (
           <View style={styles.customerCountContainer}>
@@ -44,13 +45,15 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus, email,
             </Text>
           </View>
         )}
+         <View style={{...styles.customerCountContainer, alignItems: "flex-end", justifyContent: "flex-end", marginRight: 10}}>
+        <Text style={{...styles.designation,  fontSize: 12}}>Visit Count {visitCount}</Text>
+        </View>
+      </View>
         <View style={styles.groupAvatarContainer}>
           <Image source={groupAvatar} style={styles.groupAvatar} />
         </View>
       </View>
-      <View style={{...styles.customerCountContainer, position: "absolute", top: 15, right: 8}}>
-        <Text>{visitCount}</Text>
-        </View>
+     
     </TouchableOpacity>
   );
 };

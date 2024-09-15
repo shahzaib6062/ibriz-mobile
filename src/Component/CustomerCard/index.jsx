@@ -8,7 +8,7 @@ import phoneLogo from "../../../assets/svg/call_logo.svg";
 import locationLogo from "../../../assets/svg/location_logo.svg";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-
+import { AntDesign } from "@expo/vector-icons";
 const CustomerCard = ({
   name,
   designation,
@@ -33,6 +33,12 @@ const CustomerCard = ({
       });
     }
   };
+  const handleEditFieldAgentPress = () => {
+    router.navigate({
+      pathname: "agent/agentAction",
+      params: { agentId: id },
+    });
+  };
 
   return (
     <TouchableOpacity onPress={handleCardPress}>
@@ -50,7 +56,6 @@ const CustomerCard = ({
                 flexDirection: "row",
               }}
             >
-              {/* <Text style={styles.designation}>{designation}</Text> */}
               {orderStatus && (
                 <Text
                   style={{
@@ -86,6 +91,9 @@ const CustomerCard = ({
             <Text>{address}</Text>
           </View>
         )}
+     {designation === "Field Agent" && <TouchableOpacity onPress={() => handleEditFieldAgentPress()} style={{  position: "absolute", top: 20, right: 15, padding: 5}}>
+        <AntDesign name="edit" size={24} color="#0432FF" />       
+      </TouchableOpacity>}
       </View>
     </TouchableOpacity>
   );
