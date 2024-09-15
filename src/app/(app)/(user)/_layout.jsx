@@ -134,6 +134,35 @@ export default function Layout() {
             drawerIcon: ({ size, color }) => (
               <AntDesign name="user" size={size} color={color} />
             ),
+            
+          }}
+        />
+
+        <Drawer.Screen
+          name="agent/customerAction"
+          options={{
+            drawerLabel: "Add Customer",
+            title: "Add Customer",
+            drawerIcon: ({ size, color }) => (
+              <AntDesign name="adduser" size={size} color={color} />
+            ),
+            drawerItemStyle: {
+              display: user?.data?.type === "sales" ? "flex" : "none",
+            },
+          }}
+        />
+
+        <Drawer.Screen
+          name="agent/agentAction"
+          options={{
+            drawerLabel: "Add Agent",
+            title: "Add Agent",
+            drawerIcon: ({ size, color }) => (
+              <AntDesign name="adduser" size={size} color={color} />
+            ),
+            drawerItemStyle: {
+              display: user?.data?.type === "sales" ? "flex" : "none",
+            },
           }}
         />
       </Drawer>

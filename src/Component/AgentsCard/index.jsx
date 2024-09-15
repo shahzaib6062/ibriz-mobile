@@ -7,7 +7,7 @@ import avatar2 from "../../../assets/svg/avatar_2.svg";
 import groupAvatar from "../../../assets/svg/group_avatar.svg";
 import { router } from "expo-router";
 
-const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
+const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus, email, visitCount = 0 }) => {
   const handleCardPress = () => {
     if (designation === "Field Agent") {
       router.navigate({
@@ -32,10 +32,11 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
           />
           <View>
             <Text style={styles.name}>{name}</Text>
-            <Text style={styles.designation}>{designation}</Text>
+            <Text style={styles.designation}>{email}</Text>
           </View>
         </View>
       </View>
+        <View style={{display: "flex", flexDirection: "row", alignItems: "center"}} >
       <View style={styles.row}>
         {orderStatus && (
           <View style={styles.customerCountContainer}>
@@ -44,10 +45,15 @@ const AgentsCard = ({ name, designation, totalCustomers, id, orderStatus }) => {
             </Text>
           </View>
         )}
+         <View style={{...styles.customerCountContainer, alignItems: "flex-end", justifyContent: "flex-end", marginRight: 10}}>
+        <Text style={{...styles.designation,  fontSize: 12}}>Visit Count {visitCount}</Text>
+        </View>
+      </View>
         <View style={styles.groupAvatarContainer}>
           <Image source={groupAvatar} style={styles.groupAvatar} />
         </View>
       </View>
+     
     </TouchableOpacity>
   );
 };

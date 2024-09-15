@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 import CustomerCard from "../../../../Component/CustomerCard";
 import avatar2 from "../../../../../assets/svg/avatar_2.svg";
 import { useRoute } from "@react-navigation/native";
@@ -8,9 +7,10 @@ import { useClientsOfAgent } from "../../../../Hooks/useQuery";
 import { Image } from "expo-image";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../../contexts/sessionContext";
-import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
-import { useNavigation } from "expo-router";
+import loadingLogo from "../../../../../assets/IBRIZ_logo.svg";
+import { useNavigation, useRouter } from "expo-router";
 import backIcon from "../../../../../assets/svg/backArrow.svg";
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -46,15 +46,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   pill: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#0432FF",
     paddingHorizontal: 12,
-    paddingTop: 3,
     borderRadius: 15,
     marginLeft: 10,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 2,
   },
   pillText: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 14,
   },
   avatar: {
     width: 60,
@@ -66,36 +69,57 @@ const styles = StyleSheet.create({
 });
 
 const Index = () => {
+  const router = useRouter();
   const navigation = useNavigation();
-  const { user } = useSession();
+  const { user, handleLogout } = useSession();
   const route = useRoute();
   const agentId = route.params?.agentId;
 
   const {
-    data: customersData,
     isLoading: isLoadingCustomers,
-    isError: isErrorCustomers,
-    refetch,
+    error: isErrorCustomers,
+    data: customersData,
+    mutate: mutateCustomers,
   } = useClientsOfAgent(agentId);
+
+  const handleAddCustomerPress = () => {
+    router.navigate({
+      pathname: "agent/customerAction",
+    });
+  };
+
+  const handleAddFieldAgentPress = () => {
+    router.navigate({
+      pathname: "agent/agentAction",
+    });
+  };  
 
   if (isLoadingCustomers) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#0432FF",
-          justifyContent: "center",
-          alignItems: "center",
-          objectFit: "contain",
-        }}
-      >
-        <Image source={loadingLogo} width={"50%"} height={100} />
-        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
-          Loading...
-        </Text>
+      <View>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#0432FF",
+            justifyContent: "center",
+            alignItems: "center",
+            objectFit: "contain",
+          }}
+        >
+          <Image source={loadingLogo} width={"50%"} height={100} />
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Loading...
+          </Text>
+        </View>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
+
   if (isErrorCustomers) {
     return (
       <View
@@ -113,6 +137,11 @@ const Index = () => {
             Error fetch again
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -125,7 +154,7 @@ const Index = () => {
             source={backIcon}
             width={20}
             height={20}
-            style={{ marginTop: 5 }}
+            // style={{ marginTop: 5 }}
           />
         </TouchableOpacity>
         <Image source={avatar2} style={styles.avatar} />
@@ -134,15 +163,26 @@ const Index = () => {
           {user?.data?.type} {user?.data?.role}
         </Text>
       </View>
-      <View style={styles.header}>
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Assigned Customer</Text>
+      <View style={{ display: "flex", flexDirection: "row", marginBottom: 20 }}>
+      <TouchableOpacity onPress={() => handleAddFieldAgentPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold", marginLeft: 10, paddingHorizontal: 10, paddingVertical: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF" }}>Add Field Agent</Text>
+        </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleAddCustomerPress()} style={{ backgroundColor: "#0432FF", borderRadius: 5, fontWeight: "bold", marginLeft: 10, paddingHorizontal: 10, paddingVertical: 5 }}>
+          <Text style={{ fontWeight: "bold", color: "#FFF" }}>Add Customer</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <View style={styles.header}>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerText}>Assigned Customer</Text>
+          </View>
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>
+              {customersData?.data?.count || "0"}
+            </Text>
+          </View>
         </View>
-        <View style={styles.pill}>
-          <Text style={styles.pillText}>
-            {customersData?.data?.count || "0"}
-          </Text>
-        </View>
+      
       </View>
       {customersData &&
         customersData.data &&
@@ -161,7 +201,7 @@ const Index = () => {
                 key={index}
                 name={customer?.name}
                 designation="Customer"
-                phoneNumber="1234567890"
+                phoneNumber={customer?.phone}
                 address={customer?.clientLocation}
                 id={customer._id}
               />

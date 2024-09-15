@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import FilterKPI from "../../../Component/FilterKpi";
-import { AntDesign } from "@expo/vector-icons";
 import AgentsCard from "../../../Component/AgentsCard";
 import loadingLogo from "../../../../assets/IBRIZ_logo.svg";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -14,6 +13,8 @@ import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSession } from "../../../contexts/sessionContext";
 import { EvilIcons } from "@expo/vector-icons";
+import { useVisitKpis } from "../../../Hooks/mutations";
+import Picker from "../../../Component/Picker";
 
 const styles = StyleSheet.create({
   title: {
@@ -44,15 +45,16 @@ const styles = StyleSheet.create({
   },
 });
 export default function Index() {
-  const { user } = useSession();
+  const { user, handleLogout } = useSession();
   const [kpiData, setKpiData] = useState([]);
+  
   const {
     data: clientsByAgent,
     isLoading: isLoadingClients,
     isError: isErrorClients,
     error: errorClients,
     refetch: refetchClients,
-  } = useClientsByAgent();
+  } = useClientsByAgent({ forceFetch: true });
 
   const {
     data: fieldAgentsBySalesAgent,
@@ -60,7 +62,7 @@ export default function Index() {
     isError: isErrorFieldAgents,
     error: errorFieldAgents,
     refetch: refetchFieldAgents,
-  } = useFieldAgentsBySalesAgent();
+  } = useFieldAgentsBySalesAgent({ forceFetch: true });
 
   const {
     data: agentKpis,
@@ -68,7 +70,29 @@ export default function Index() {
     isError: isErrorAgentKpis,
     isSuccess: isSuccessAgentKpis,
     refetch: refetchAgentKpis,
-  } = UseAgentKpis();
+  } = UseAgentKpis({ forceFetch: true });
+
+  const {
+    data: visitKpis,
+    isLoading: isLoadingVisitKpis,
+    isError: isErrorVisitKpis,
+    isSuccess: isSuccessVisitKpis,
+    refetch: refetchVisitKpis,
+    mutate: mutateVisitKpis,
+  } = useVisitKpis({ forceFetch: true });
+    console.log("🚀 ~ Index ~ visitKpis:", visitKpis?.data)
+
+  
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const currentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const formattedStartDate = currentMonth.toISOString().split("T")[0] + "T00:00:00.000";
+    const formattedEndDate = currentDate.toISOString().split("T")[0] + "T23:59:59.999";
+    const payload = { startDate: formattedStartDate, endDate: formattedEndDate, agentId: user?.data?._id };
+    mutateVisitKpis(payload);
+  }, []);
+
   useEffect(() => {
     if (user?.data?.type === "field" && agentKpis?.data) {
       setKpiData([
@@ -93,6 +117,13 @@ export default function Index() {
           change: "",
           icon: "clockcircleo",
         },
+        {
+          value: visitKpis?.data?.totalVisits || 0,
+          unit: "",
+          label: "Total visits",
+          change: "",
+          icon: "checkcircleo",
+        }
       ]);
     } else if (user?.data?.type === "sales" && agentKpis?.data) {
       setKpiData([
@@ -117,9 +148,16 @@ export default function Index() {
           change: "",
           icon: "clockcircleo",
         },
+        {
+          value: visitKpis?.data?.totalVisits || 0,
+          unit: "",
+          label: "Total visits",
+          change: "",
+          icon: "checkcircleo",
+        }
       ]);
     }
-  }, [agentKpis]);
+  }, [agentKpis, visitKpis]);
 
   if (isLoadingClients || isLoadingFieldAgents) {
     return (
@@ -132,6 +170,11 @@ export default function Index() {
         >
           <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
             loading...
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
           </Text>
         </TouchableOpacity>
       </View>
@@ -147,6 +190,11 @@ export default function Index() {
             Error fetching data
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -155,12 +203,21 @@ export default function Index() {
     refetchClients();
     refetchFieldAgents();
     refetchAgentKpis();
+
+  };
+
+  const handleFilterChange = (value) => {
+    mutateVisitKpis({ startDate: value.startDate, endDate: value.endDate, agentId: user?.data?._id });
   };
 
   return (
     <ScrollView>
+      
       <View style={styles.appLayout}>
         <View style={styles.container}>
+        <View style={{ position: 'absolute', right: 0, top: 0, marginTop: 5, marginRight: 10 }} >
+      <Picker onFilterChange={handleFilterChange} />
+      </View>
           <View
             style={{
               display: "flex",
@@ -169,7 +226,7 @@ export default function Index() {
             }}
           >
             <View>
-              <Text style={styles.title}>Overview</Text>
+              <Text style={styles.title}>Overview</Text>  
             </View>
             <View>
               <TouchableOpacity
@@ -178,6 +235,7 @@ export default function Index() {
                   flexDirection: "row",
                   alignItems: "end",
                   marginTop: 20,
+                  justifyContent: 'flex-end',
                 }}
                 onPress={refetchFunc}
               >
@@ -187,20 +245,20 @@ export default function Index() {
                     fontWeight: "bold",
                     color: "#0432FF",
                     fontSize: 12,
+                    marginTop: 2,
                   }}
                 >
                   Refresh
                 </Text>
-                <EvilIcons name="refresh" size={24} color="black" />
+                <EvilIcons name="refresh" size={24} color="black" style={{ marginBottom: 10 }} />
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-        {kpiData &&
+        </View>  
+    {kpiData &&
           kpiData.map((item, index) => (
             <FilterKPI key={index} kpiData={item} />
           ))}
-
         {fieldAgentsBySalesAgent &&
           fieldAgentsBySalesAgent.data?.count === 0 &&
           clientsByAgent &&
@@ -221,23 +279,20 @@ export default function Index() {
             </View>
           )}
 
-        {fieldAgentsBySalesAgent && fieldAgentsBySalesAgent.data?.count > 0 && (
-          <View style={styles.container}>
-            <Text style={styles.title}>Field Agents</Text>
-            {/* <AntDesign
-              name="arrowright"
-              size={24}
-              color="black"
-              style={{ marginRight: 10, marginTop: 15 }}
-            /> */}
-          </View>
-        )}
+        {user?.data?.type === "sales" &&
+          fieldAgentsBySalesAgent &&
+          fieldAgentsBySalesAgent.data?.count > 0 && (
+            <View style={styles.container}>
+              <Text style={styles.title}>Field Agents</Text>
+            </View>
+          )}
         <ScrollView
           horizontal
           contentContainerStyle={styles.AgentsCardRow}
           showsHorizontalScrollIndicator={false}
         >
-          {fieldAgentsBySalesAgent &&
+          {user?.data?.type === "sales" &&
+            fieldAgentsBySalesAgent &&
             fieldAgentsBySalesAgent.data &&
             Array.isArray(fieldAgentsBySalesAgent.data.data) &&
             fieldAgentsBySalesAgent.data.data.map((agent, index) => (
@@ -246,6 +301,8 @@ export default function Index() {
                 id={agent?._id}
                 name={agent?.name}
                 designation="Field Agent"
+                visitCount={ visitKpis?.data?.visitCountByFieldAgent[agent?._id] || 0}
+                email={agent?.email}
                 totalCustomers={100}
                 orderStatus={agent?.orderStatus}
               />
@@ -255,12 +312,6 @@ export default function Index() {
           <View>
             <View style={styles.container}>
               <Text style={styles.title}>Customers</Text>
-              {/* <AntDesign
-                name="arrowright"
-                size={24}
-                color="black"
-                style={{ marginRight: 10, marginTop: 15 }}
-              /> */}
             </View>
             {clientsByAgent &&
               clientsByAgent.data &&
@@ -275,9 +326,11 @@ export default function Index() {
                       key={index}
                       name={client?.name}
                       designation="Customer"
+                      email={client?.email}
                       totalCustomers={100}
                       id={client?._id}
                       orderStatus={client?.orderStatus}
+                      visitCount={ visitKpis?.data?.visitCountByClients[client?._id] || 0}
                     />
                   ))}
                 </ScrollView>

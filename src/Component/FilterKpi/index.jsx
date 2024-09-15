@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import Picker from "../Picker";
 const { width } = Dimensions.get("window");
 
 const logoSize = width * 0.11;
@@ -24,6 +25,7 @@ const FilterKPI = ({ kpiData }) => {
           </View>
         </View>
       </View>
+     
     </View>
   );
 };

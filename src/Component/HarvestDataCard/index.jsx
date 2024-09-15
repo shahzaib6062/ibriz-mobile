@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   Modal,
   Linking,
+  
 } from "react-native";
 
-const HarvestDataCard = ({ data }) => {
+const HarvestDataCard = ({ data , index}) => {
   const [showFullText, setShowFullText] = useState({});
   const [selectedFullText, setSelectedFullText] = useState(null);
 
@@ -44,25 +45,30 @@ const HarvestDataCard = ({ data }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {data.map((item, index) => (
-        <View key={index} style={styles.row}>
-          <Text style={styles.label}>{item.label}: </Text>
-          <TouchableOpacity onPress={() => handleValueClick(index, item.value)}>
-            <Text
-              style={[
-                styles.value,
-                item.value instanceof Array && styles.link,
-                showFullText[index] ? styles.valueFull : styles.valueTruncated,
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {item.value instanceof Array ? "View Location" : item.value}
-            </Text>
-          </TouchableOpacity>
+    <View>
+      <View style={styles.card}>
+        <View style={styles.container}>
+          <Text style={styles.heading}>Visit # {index + 1}</Text>
+          {data.map((item, index) => (
+            <View key={index} style={styles.row}>
+              <Text style={styles.label}>{item.label}: </Text>
+              <TouchableOpacity onPress={() => handleValueClick(index, item.value)}>
+                <Text
+                  style={[
+                    styles.value,
+                    item.value instanceof Array && styles.link,
+                    showFullText[index] ? styles.valueFull : styles.valueTruncated,
+                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {item.value instanceof Array ? "View Location" : truncateText(item.value, 25)}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
         </View>
-      ))}
+      </View>
       <Modal
         visible={selectedFullText !== null}
         onRequestClose={closeFullTextModal}
@@ -85,10 +91,29 @@ const HarvestDataCard = ({ data }) => {
 };
 
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    margin: 10,
+  },
   container: {
     padding: 15,
     borderTopWidth: 0.8,
     borderTopColor: "#E0E0E0",
+  },
+  heading: {
+    fontWeight: "bold",
+    fontSize: 20,
+    marginBottom: 10,
+    textAlign: "center",
   },
   row: {
     flexDirection: "row",
@@ -144,3 +169,4 @@ const styles = StyleSheet.create({
 });
 
 export default HarvestDataCard;
+

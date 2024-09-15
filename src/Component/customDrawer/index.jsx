@@ -17,11 +17,12 @@ import { useSession } from "../../contexts/sessionContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const CustomDrawer = (props) => {
-  const { removeUser, user } = useSession();
+  const { removeUser, user, handleLogout } = useSession();
   const { bottom } = useSafeAreaInsets();
 
   const logout = () => {
     removeUser();
+    handleLogout();
   };
 
   return (
