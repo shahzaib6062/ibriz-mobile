@@ -1,22 +1,16 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 const { width } = Dimensions.get("window");
-const logoSize = width * 0.15;
+
+const logoSize = width * 0.11;
 
 const FilterKPI = ({ kpiData }) => {
-  const kpiLogo =
-    kpiData.label === "Total Energy Generated"
-      ? require("../../../assets/svg/totalEnergyLogo.svg")
-      : kpiData.label === "Total Carbon Offset"
-      ? require("../../../assets/svg/carbonFootingLogo.svg")
-      : require("../../../assets/svg/runtimeLogo.svg");
-
   return (
     <View style={styles.container}>
       <View style={styles.itemContainer}>
         <View style={styles.imageContainer}>
-          <Image source={kpiLogo} style={styles.logo} />
+          <AntDesign name={kpiData?.icon} size={24} color="black" />
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.row}>
@@ -38,16 +32,17 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 11,
     backgroundColor: "#FFF",
-    shadowColor: "#DFE5FF",
+    padding: 10,
+    marginVertical: 10,
+    marginHorizontal: 15,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
-    shadowOpacity: 0.22,
-    shadowRadius: 5.5,
-    elevation: 3,
-    padding: 10,
-    margin: 10,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 
   itemContainer: {
@@ -56,28 +51,23 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     marginRight: 10,
+    padding: 5,
+    backgroundColor: "#D7DCF0",
+    borderRadius: 5,
   },
-  logo: {
-    width: logoSize,
-    height: logoSize,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: "#D7DCF0",
-    backgroundColor: "rgba(13, 62, 255, 0.12)",
-    padding: 7,
-  },
+
   infoContainer: {
     flex: 2,
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 5,
+    marginVertical: 2,
   },
   valueText: {
     color: "#1A2641",
     fontFamily: "Noto Sans",
-    fontSize: 26,
+    fontSize: 20,
     fontWeight: "700",
     textTransform: "capitalize",
   },

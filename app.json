@@ -7,27 +7,40 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
+      "height": "100px",
+      "width": "100px",
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0432FF"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/splash.png",
+        "backgroundColor": "#0432FF"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBYLvN67ElYQnpVdrjdx89H2w9SQ7KBFes"
+        }
+      },
+      "package": "com.shazaib.ibrizmobile"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/IBRIZ_logo.svg"
     },
-    "plugins": [
-      "expo-router"
-    ]
+    "plugins": ["expo-router"],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d33b1752-6a3d-4ed7-8871-bac01511c1dd"
+      }
+    },
+    "scheme": "ibriz-mobile"
   }
 }

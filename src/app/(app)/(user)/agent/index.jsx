@@ -2,11 +2,19 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import CustomerCard from "../../../../Component/CustomerCard";
-
+import avatar2 from "../../../../../assets/svg/avatar_2.svg";
+import { useRoute } from "@react-navigation/native";
+import { useClientsOfAgent } from "../../../../Hooks/useQuery";
+import { Image } from "expo-image";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { useSession } from "../../../../contexts/sessionContext";
+import loadingLogo from "..././../../../assets/IBRIZ_logo.svg";
+import { useNavigation } from "expo-router";
+import backIcon from "../../../../../assets/svg/backArrow.svg";
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#FFF",
     flex: 1,
   },
   titleRow: {
@@ -48,45 +56,118 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 12,
   },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    backgroundColor: "#E0E0E0",
+    alignSelf: "center",
+  },
 });
 
-const customersData = [
-  {
-    avatar: "avatar_url_1",
-    name: "Fermi Borgani",
-    designation: "Customer",
-    phoneNumber: "+92-346-2567607",
-    address: "RN2, Nayamugari, Street 29, Burundi",
-  },
-  {
-    avatar: "avatar_url_2",
-    name: "John Doe",
-    designation: "Customer",
-    phoneNumber: "+91-9876543210",
-    address: "123 Main Street, City, Country",
-  },
-  // Add more customer objects as needed
-];
-
 const Index = () => {
+  const navigation = useNavigation();
+  const { user } = useSession();
+  const route = useRoute();
+  const agentId = route.params?.agentId;
+
+  const {
+    data: customersData,
+    isLoading: isLoadingCustomers,
+    isError: isErrorCustomers,
+    refetch,
+  } = useClientsOfAgent(agentId);
+
+  if (isLoadingCustomers) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#0432FF",
+          justifyContent: "center",
+          alignItems: "center",
+          objectFit: "contain",
+        }}
+      >
+        <Image source={loadingLogo} width={"50%"} height={100} />
+        <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+          Loading...
+        </Text>
+      </View>
+    );
+  }
+  if (isErrorCustomers) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#0432FF",
+          justifyContent: "center",
+          alignItems: "center",
+          objectFit: "contain",
+        }}
+      >
+        <Image source={loadingLogo} width={"50%"} height={100} />
+        <TouchableOpacity onPress={refetch}>
+          <Text style={{ marginTop: 10, fontWeight: "bold", color: "#FFF" }}>
+            Error fetch again
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
-        <AntDesign name="left" size={24} color="black" />
-        <Text style={styles.titleText}>Sales Agent</Text>
-        <Text style={styles.titleDesignationText}>Sales Agent</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            source={backIcon}
+            width={20}
+            height={20}
+            style={{ marginTop: 5 }}
+          />
+        </TouchableOpacity>
+        <Image source={avatar2} style={styles.avatar} />
+        <Text style={styles.titleText}>{user?.data?.name}</Text>
+        <Text style={styles.titleDesignationText}>
+          {user?.data?.type} {user?.data?.role}
+        </Text>
       </View>
       <View style={styles.header}>
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>Assigned Customer</Text>
         </View>
         <View style={styles.pill}>
-          <Text style={styles.pillText}>25</Text>
+          <Text style={styles.pillText}>
+            {customersData?.data?.count || "0"}
+          </Text>
         </View>
       </View>
-      {customersData.map((customer, index) => (
-        <CustomerCard key={index} {...customer} />
-      ))}
+      {customersData &&
+        customersData.data &&
+        Array.isArray(customersData?.data?.data) && (
+          <ScrollView
+            vertical
+            contentContainerStyle={{
+              display: "flex",
+              flexDirection: "column",
+              overflowX: "hidden",
+            }}
+            showsVerticalScrollIndicator={false}
+          >
+            {customersData?.data?.data.map((customer, index) => (
+              <CustomerCard
+                key={index}
+                name={customer?.name}
+                designation="Customer"
+                phoneNumber="1234567890"
+                address={customer?.clientLocation}
+                id={customer._id}
+              />
+            ))}
+          </ScrollView>
+        )}
     </View>
   );
 };
